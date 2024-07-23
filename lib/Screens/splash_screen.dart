@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
             SizedBox(height: 20),
             GestureDetector(
               onTap: () {
-                Navigator.pushReplacementNamed(context, '/login');
+                Navigator.pushReplacementNamed(context, '/agreement');
               },
               child: Text(
                 'DEHATI',

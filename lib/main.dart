@@ -8,6 +8,7 @@ import 'Screens/chat_page.dart';
 import 'Screens/login.dart';
 import 'Screens/phrase.dart';
 import 'Screens/regenerate.dart';
+import 'Screens/agreement_page.dart';
 // import 'screens/contacts_page.dart';
 // import 'screens/messages_page.dart';
 // import 'screens/saved_contacts_page.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => SplashScreen(),
+        '/agreement': (context) => AgreementPage(),
         '/login': (context) => LoginPage(),
         '/phrase':(context) => PhrasePage(),
         '/userid': (context) => UserId(),
