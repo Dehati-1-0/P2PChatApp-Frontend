@@ -12,6 +12,7 @@ import 'Screens/agreement_page.dart';
 // import 'screens/contacts_page.dart';
 // import 'screens/messages_page.dart';
 // import 'screens/saved_contacts_page.dart';
+import 'Screens/key_phrase_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -32,16 +33,17 @@ class MyApp extends StatelessWidget {
         '/': (context) => SplashScreen(),
         '/agreement': (context) => AgreementPage(),
         '/login': (context) => LoginPage(),
-        '/phrase':(context) => PhrasePage(),
+        '/phrase': (context) => PhrasePage(),
         '/userid': (context) => UserId(),
         '/regenerate': (context) => GeneratePhrasePage(),
         '/username': (context) => UserName(),
-        '/messages':(context) => MessagesList(),
+        '/messages': (context) => MessagesList(),
         '/contacts': (context) => SavedContacts(),
         // '/chat': (context) => ChatPage(),
         // '/contacts': (context) => ContactsPage(),
         // '/messages': (context) => MessagesPage(),
         // '/saved_contacts': (context) => SavedContactsPage(),
+        '/key_phrase_page': (context) => KeyPhrasePage(),
       },
     );
   }
