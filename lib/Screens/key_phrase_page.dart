@@ -37,7 +37,9 @@ class KeyPhrasePage extends StatelessWidget {
 
 //button
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, '/phrase');
+              },
               child: Center(
                 child: Container(
                   height: 70,
