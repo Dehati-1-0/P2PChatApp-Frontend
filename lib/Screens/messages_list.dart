@@ -6,7 +6,7 @@ class MessagesList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Messages'),
+        title: Text('Chats'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -38,12 +38,61 @@ class MessagesList extends StatelessWidget {
                 ),
                 SizedBox(width: 10),
                 CircleAvatar(
-                  backgroundImage: AssetImage('assets/current_user.jpg'), // Replace with the current user's image
+                  backgroundImage: AssetImage(
+                      'assets/current_user.jpg'), // Replace with the current user's image
                   radius: 20,
                 ),
               ],
             ),
             SizedBox(height: 20),
+            Row(children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    // Navigator.pushNamed(context, '/contacts');
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Chats',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 8,
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    // Navigator.pushNamed(context, '/contacts');
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Groups',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+            ]),
+            SizedBox(
+              width: 10,
+            ),
             Expanded(
               child: ListView(
                 children: [
@@ -105,20 +154,43 @@ class MessagesList extends StatelessWidget {
                 ],
               ),
             ),
-            FloatingActionButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/contacts');
-              },
-              child: Icon(Icons.add),
-              backgroundColor: Colors.lightBlue,
-            ),
+            Container(
+              color: Colors.blue,
+              padding: EdgeInsets.symmetric(vertical: 10),
+              // height: 60.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.compass_calibration_outlined,
+                        color: Colors.black),
+                    onPressed: () {
+                      // Navigator.pushNamed(context, '/contacts');
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.chat_bubble_outline, color: Colors.black),
+                    onPressed: () {
+                      // Navigator.pushNamed(context, '/contacts');
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.people_outline, color: Colors.black),
+                    onPressed: () {
+                      // Navigator.pushNamed(context, '/contacts');
+                    },
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMessageItem(BuildContext context, String name, String message, String time, String avatarPath, bool isNew) {
+  Widget _buildMessageItem(BuildContext context, String name, String message,
+      String time, String avatarPath, bool isNew) {
     return ListTile(
       leading: CircleAvatar(
         backgroundImage: AssetImage(avatarPath),

@@ -9,9 +9,6 @@ import 'Screens/login.dart';
 import 'Screens/phrase.dart';
 import 'Screens/regenerate.dart';
 import 'Screens/agreement_page.dart';
-// import 'screens/contacts_page.dart';
-// import 'screens/messages_page.dart';
-// import 'screens/saved_contacts_page.dart';
 import 'Screens/key_phrase_page.dart';
 import 'Screens/existing_user_page.dart';
 import 'Screens/new_user_page.dart';
@@ -32,34 +29,6 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Lato',
       ),
       initialRoute: '/',
-      routes: {
-        '/': (context) => SplashScreen(),
-        '/agreement': (context) => AgreementPage(),
-        '/login': (context) => LoginPage(),
-        '/phrase': (context) => PhrasePage(),
-        '/userid': (context) => UserId(),
-        '/regenerate': (context) => GeneratePhrasePage(),
-        '/username': (context) => UserName(),
-        '/messages': (context) => MessagesList(),
-        '/contacts': (context) => SavedContacts(),
-        // '/chat': (context) => ChatPage(),
-        // '/contacts': (context) => ContactsPage(),
-        // '/messages': (context) => MessagesPage(),
-        // '/saved_contacts': (context) => SavedContactsPage(),
-        '/key_phrase_page': (context) => KeyPhrasePage(),
-      // routes: {
-      //   '/': (context) => SplashScreen(),
-      //   '/agreement': (context) => AgreementPage(),
-      //   '/login': (context) => LoginPage(),
-      //   '/phrase':(context) => PhrasePage(),
-      //   '/userid': (context) => UserId(),
-      //   '/regenerate': (context) => GeneratePhrasePage(),
-      //   '/username': (context) => UserName(),
-      //   '/messages':(context) => MessagesList(),
-      //   '/contacts': (context) => SavedContacts(),
-
-      // },
-
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/':
@@ -68,6 +37,8 @@ class MyApp extends StatelessWidget {
             return SlideLeftRoute(page: AgreementPage());
           case '/login':
             return SlideLeftRoute(page: LoginPage());
+          case '/keyphrase':
+            return SlideLeftRoute(page: KeyPhrasePage());
           case '/existinguser':
             return SlideLeftRoute(page: WelcomeBackPage());
           case '/phrase':

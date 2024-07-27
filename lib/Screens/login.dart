@@ -35,7 +35,7 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/userid');
+                  Navigator.pushNamed(context, '/keyphrase');
                 },
                 child: Center(
                   child: Text(
