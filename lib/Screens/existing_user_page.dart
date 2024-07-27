@@ -3,6 +3,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 class WelcomeBackPage extends StatelessWidget {
   final String userId = 'Psd5588'; // Replace with the actual user ID
+  final String userName = 'John Doe'; // Replace with the actual user name
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class WelcomeBackPage extends StatelessWidget {
               'WELCOME  BACK',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 32,
+                fontSize: 40,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF0A174E),
               ),
@@ -39,11 +40,20 @@ class WelcomeBackPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Text(
-              'This is your id $userId',
+              'This is your id: $userId',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.black, 
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'This is your username: $userName',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black,
               ),
             ),
             SizedBox(height: 10),
@@ -65,13 +75,30 @@ class WelcomeBackPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Spacer(),
-            Center(
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/messages');
+              },
               child: Text(
-                'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+                'Next',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF0A174E),
+                padding: EdgeInsets.symmetric(vertical: 16),
               ),
             ),
+            // Center(
+            //   child: Text(
+            //     'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+            //     textAlign: TextAlign.center,
+            //     style: TextStyle(color: Colors.grey),
+            //   ),
+            // ),
             SizedBox(height: 20),
           ],
         ),

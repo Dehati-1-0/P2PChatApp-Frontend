@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Screens/splash_screen.dart';
-import 'Screens/user_id.dart';
 import 'Screens/user_name.dart';
+import 'Screens/description_page.dart';
 import 'Screens/messages_list.dart';
 import 'Screens/saved_contacts.dart';
 import 'Screens/chat_page.dart';
@@ -12,6 +12,7 @@ import 'Screens/agreement_page.dart';
 import 'Screens/key_phrase_page.dart';
 import 'Screens/existing_user_page.dart';
 import 'Screens/new_user_page.dart';
+import 'Screens/generated_id_page.dart';
 import '../widgets/page_route.dart';
 
 void main() {
@@ -37,24 +38,26 @@ class MyApp extends StatelessWidget {
             return SlideLeftRoute(page: AgreementPage());
           case '/login':
             return SlideLeftRoute(page: LoginPage());
+          case '/phrase':
+            return SlideLeftRoute(page: PhrasePage());
           case '/keyphrase':
             return SlideLeftRoute(page: KeyPhrasePage());
           case '/existinguser':
             return SlideLeftRoute(page: WelcomeBackPage());
-          case '/phrase':
-            return SlideLeftRoute(page: PhrasePage());
-          case '/userid':
-            return SlideLeftRoute(page: UserId());
-          case '/regenerate':
-            return SlideLeftRoute(page: GeneratePhrasePage());
           case '/username':
             return SlideLeftRoute(page: UserName());
+          case '/description':
+            return SlideLeftRoute(page: DescriptionPage());
+          case '/regenerate':
+            return SlideLeftRoute(page: GeneratePhrasePage());
           case '/newuser':
             return SlideLeftRoute(page: WelcomePage());
           case '/messages':
             return SlideLeftRoute(page: MessagesList());
           case '/contacts':
             return SlideLeftRoute(page: SavedContacts());
+          case '/generatedid':
+            return SlideLeftRoute(page: GeneratedIdPage());
           default:
             return null;
         }

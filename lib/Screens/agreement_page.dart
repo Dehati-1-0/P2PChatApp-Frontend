@@ -44,7 +44,7 @@ class AgreementPage extends StatelessWidget {
                     fontSize: 14,
                     color: Colors.black,
                   ),
-                ),
+                ), 
               ),
             ),
             SizedBox(height: 30),

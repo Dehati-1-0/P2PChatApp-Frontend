@@ -16,7 +16,7 @@ class LoginPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Text(
-              'DEHATI',
+              'DEHATI', 
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -35,7 +35,7 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/keyphrase');
+                  Navigator.pushNamed(context, '/phrase');
                 },
                 child: Center(
                   child: Text(
@@ -59,7 +59,7 @@ class LoginPage extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/key_phrase_page');
+                Navigator.pushNamed(context, '/keyphrase');
                    
               },
               child: Text(

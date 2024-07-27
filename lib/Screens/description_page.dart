@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_app_bar.dart';
 
-class KeyPhrasePage extends StatelessWidget {
+class DescriptionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,7 +12,7 @@ class KeyPhrasePage extends StatelessWidget {
         child: Column(
           children: [
             const Text(
-              "Why we need a unique phrase?",
+              "Why ID, KEY PHRASE & USERNAME?",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
             ),
             const SizedBox(
@@ -38,7 +38,7 @@ class KeyPhrasePage extends StatelessWidget {
 //button
             GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, '/username');
+                Navigator.pushNamed(context, '/generatedid');
               },
               child: Center(
                 child: Container(
@@ -51,7 +51,7 @@ class KeyPhrasePage extends StatelessWidget {
                   ),
                   child: const Center(
                     child: const Text(
-                      "Generate",
+                      "OK, I understand",
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,

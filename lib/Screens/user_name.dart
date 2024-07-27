@@ -12,60 +12,41 @@ class UserName extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // SizedBox(height: 0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Image.asset('assets/dehati_logo.png', height: 100),
-                      SizedBox(height: 20),
-                      Text(
-                        'Contacts',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 50),
-                    ],
-                  ),
-                ],
+              Image.asset(
+                'assets/dehati_logo.png',
+                height: 150,
               ),
+              SizedBox(height: 30),
+              Text(
+                'Enter your username here',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 30),
               TextField(
                 decoration: InputDecoration(
-                  labelText: 'User Name',
+                  hintText: 'Type here',
                   border: OutlineInputBorder(),
                   fillColor: Colors.grey[200],
                   filled: true,
                 ),
               ),
-              SizedBox(height: 80),
-
-
-
+              SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/newuser');
+                  Navigator.pushNamed(context, '/description');
                 },
                 child: Text(
-                  'Save',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white, fontSize: 16,),
+                  'Generated unique ID',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF0A174E),
                   padding: EdgeInsets.symmetric(vertical: 16),
-                ),
-              ),
-              SizedBox(height: 90),
-
-              Center(
-                child: Text(
-                  'centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey),
                 ),
               ),
             ],
