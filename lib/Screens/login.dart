@@ -63,7 +63,7 @@ class LoginPage extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                   Navigator.pushNamed(context, '/phrase');
+                   Navigator.pushNamed(context, '/existinguser');
               },
               child: Text(
                 'Generate unique key phrase',

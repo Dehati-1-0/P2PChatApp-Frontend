@@ -47,7 +47,7 @@ class UserName extends StatelessWidget {
 
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/messages');
+                  Navigator.pushNamed(context, '/newuser');
                 },
                 child: Text(
                   'Save',
