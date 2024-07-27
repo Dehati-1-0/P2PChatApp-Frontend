@@ -23,36 +23,32 @@ class LoginPage extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
-
-            
             Spacer(),
-             Padding(
-               padding: const EdgeInsets.symmetric(horizontal: 32.0),
-               child: ElevatedButton(
-                 style: ElevatedButton.styleFrom(
-                   backgroundColor: Color(0xFF0A174E), // Background color
-                   padding: EdgeInsets.symmetric(vertical: 16.0),
-                   shape: RoundedRectangleBorder(
-                     borderRadius: BorderRadius.circular(8.0),
-                   ),
-                 ),
-                 onPressed: () {
-                   Navigator.pushNamed(context, '/userid');
-                 },
-                 child: Center(
-                   child: Text(
-                     'LOGIN',
-                     style: TextStyle(
-                       color: Colors.white,
-                       fontSize: 16,
-                       fontWeight: FontWeight.bold,
-                     ),
-
-                   ),
-
-                 ),
-               ),
-             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF0A174E), // Background color
+                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/userid');
+                },
+                child: Center(
+                  child: Text(
+                    'LOGIN',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
             SizedBox(height: 10),
             Text(
               'or',
@@ -63,7 +59,8 @@ class LoginPage extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                   Navigator.pushNamed(context, '/existinguser');
+                Navigator.pushNamed(context, '/key_phrase_page');
+                   
               },
               child: Text(
                 'Generate unique key phrase',
