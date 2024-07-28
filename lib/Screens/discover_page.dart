@@ -239,7 +239,7 @@ class DiscoverPage extends StatelessWidget {
         bottomNavigationBar: Container(
           color: Color(0xFF1A2247),
           padding: EdgeInsets.symmetric(vertical: 10),
-          height: 80.0,
+          height: 60.0,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
