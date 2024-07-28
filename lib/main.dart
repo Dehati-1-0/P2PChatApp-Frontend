@@ -65,7 +65,6 @@ class MyApp extends StatelessWidget {
             return SlideLeftRoute(page: GeneratedIdPage());
           case '/settings':
             return SlideLeftRoute(page: SettingsPage());
-
           case '/discover':
             return SlideLeftRoute(page: DiscoverPage());
 

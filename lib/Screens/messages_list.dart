@@ -126,36 +126,6 @@ class _MessagesListState extends State<MessagesList> {
                     : _buildGroupItems(context),
               ),
             ),
-
-            Container(
-              color: Colors.blue,
-              padding: EdgeInsets.symmetric(vertical: 10),
-              // height: 60.0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.compass_calibration_outlined,
-                        color: Colors.black),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/discover');
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.chat_bubble_outline, color: Colors.black),
-                    onPressed: () {
-                      // Navigator.pushNamed(context, '/contacts');
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.people_outline, color: Colors.black),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/contacts');
-                    },
-                  ),
-                ],
-              ),
-            )
           ],
         ),
       ),
@@ -175,6 +145,7 @@ class _MessagesListState extends State<MessagesList> {
                   ),
                   onPressed: () {
                     _onBottomNavItemTapped(0);
+                    Navigator.pushNamed(context, '/discover');
                   },
                 ),
                 IconButton(
