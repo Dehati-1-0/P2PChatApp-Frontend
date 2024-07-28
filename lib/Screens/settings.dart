@@ -112,34 +112,22 @@ class SettingsPage extends StatelessWidget {
                     SizedBox(
                       height: 50,
                     ),
-
-//button
-
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '');
-                      },
-                      child: Center(
-                        child: Container(
-                          height: 70,
-                          width: 338,
-                          padding: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: const Color(0xFF1A2247),
-                          ),
-                          child: const Center(
-                            child: const Text(
-                              "Logout",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/username');
+                        },
+                        child: Text(
+                          'Log Out',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF1A2247),
+                          padding: EdgeInsets.symmetric(vertical: 16),
                         ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),

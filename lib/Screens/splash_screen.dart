@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     _controller.forward().then((value) {
       // Navigate to the next screen after 2 seconds
       Future.delayed(Duration(seconds: 2), () {
-        Navigator.pushReplacementNamed(context, '/agreement');
+        Navigator.pushReplacementNamed(context, '/welcome');
       });
     });
   }

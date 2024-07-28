@@ -13,6 +13,8 @@ import 'Screens/key_phrase_page.dart';
 import 'Screens/existing_user_page.dart';
 import 'Screens/new_user_page.dart';
 import 'Screens/generated_id_page.dart';
+import 'Screens/welcome_page.dart';
+import 'Screens/settings.dart';
 import '../widgets/page_route.dart';
 
 void main() {
@@ -34,10 +36,12 @@ class MyApp extends StatelessWidget {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(builder: (_) => SplashScreen());
+          case '/welcome':
+            return SlideLeftRoute(page: WelcomeUserPage());
           case '/agreement':
             return SlideLeftRoute(page: AgreementPage());
           case '/login':
-            return SlideLeftRoute(page: LoginPage());
+            return SlideLeftRoute(page: LoginPage()); 
           case '/phrase':
             return SlideLeftRoute(page: PhrasePage());
           case '/keyphrase':
@@ -58,6 +62,8 @@ class MyApp extends StatelessWidget {
             return SlideLeftRoute(page: SavedContacts());
           case '/generatedid':
             return SlideLeftRoute(page: GeneratedIdPage());
+          case '/settings':
+            return SlideLeftRoute(page: SettingsPage());
           default:
             return null;
         }

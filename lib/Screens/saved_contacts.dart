@@ -1,7 +1,21 @@
 import 'package:flutter/material.dart';
 import '../widgets/custom_app_bar.dart';
 
-class SavedContacts extends StatelessWidget {
+class SavedContacts extends StatefulWidget {
+  @override
+  _SavedContactsState createState() => _SavedContactsState();
+}
+
+class _SavedContactsState extends State<SavedContacts> {
+  bool _isChatsSelected = true;
+  int _selectedIndex = 2;
+  void _onBottomNavItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      _isChatsSelected = index == 2;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,6 +61,49 @@ class SavedContacts extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Color(0xFF1A2247),
+        child: SizedBox(
+          height: 56, // Adjust the height as needed
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.compass_calibration_outlined,
+                    color: _selectedIndex == 0 ? Colors.black : Colors.white,
+                  ),
+                  onPressed: () {
+                    _onBottomNavItemTapped(0);
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.chat_bubble_outline,
+                    color: _selectedIndex == 1 ? Colors.black : Colors.white,
+                  ),
+                  onPressed: () {
+                    _onBottomNavItemTapped(1);
+                    Navigator.pushNamed(context, '/messages');
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.people_outline,
+                    color: _selectedIndex == 2 ? Colors.black : Colors.white,
+                  ),
+                  onPressed: () {
+                    _onBottomNavItemTapped(2);
+                    Navigator.pushNamed(context, '/contacts');
+                  },
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

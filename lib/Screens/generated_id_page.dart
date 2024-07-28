@@ -18,7 +18,7 @@ class GeneratedIdPage extends StatelessWidget {
             ),
             SizedBox(height: 30),
             Text(
-              'Your ID and username',
+              'Your ID and UserName',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 25,
@@ -54,7 +54,7 @@ class GeneratedIdPage extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 16),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF0A174E),
+                backgroundColor: Color(0xFF1A2247),
                 padding: EdgeInsets.symmetric(vertical: 16),
               ),
             ),

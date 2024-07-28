@@ -88,7 +88,7 @@ class WelcomeBackPage extends StatelessWidget {
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF0A174E),
+                backgroundColor: Color(0xFF1A2247),
                 padding: EdgeInsets.symmetric(vertical: 16),
               ),
             ),

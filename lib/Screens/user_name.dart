@@ -29,7 +29,7 @@ class UserName extends StatelessWidget {
               SizedBox(height: 30),
               TextField(
                 decoration: InputDecoration(
-                  hintText: 'Type here',
+                  hintText: 'User Name',
                   border: OutlineInputBorder(),
                   fillColor: Colors.grey[200],
                   filled: true,
@@ -45,7 +45,7 @@ class UserName extends StatelessWidget {
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF0A174E),
+                  backgroundColor: Color(0xFF1A2247),
                   padding: EdgeInsets.symmetric(vertical: 16),
                 ),
               ),

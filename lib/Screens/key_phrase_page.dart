@@ -12,55 +12,49 @@ class KeyPhrasePage extends StatelessWidget {
         child: Column(
           children: [
             const Text(
-              "Why we need a unique phrase?",
+              "Why we need a unique key phrase?",
+              textAlign: TextAlign.center,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
             ),
             const SizedBox(
-              height: 30,
+              height: 20,
             ),
             Container(
               decoration: BoxDecoration(
-                  color:
-                      const Color.fromARGB(62, 22, 26, 137).withOpacity(0.03),
-                  borderRadius: BorderRadius.circular(10)),
+                color: const Color.fromARGB(62, 22, 26, 137).withOpacity(0.03),
+                borderRadius: BorderRadius.circular(10),
+              ),
               child: const Padding(
                 padding: EdgeInsets.all(10.0),
                 child: Text(
-                  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-                  style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-
-//button
-            GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/username');
-              },
-              child: Center(
-                child: Container(
-                  height: 70,
-                  width: 338,
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: const Color(0xFF1A2247),
-                  ),
-                  child: const Center(
-                    child: const Text(
-                      "Generate",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
-                    ),
+                  'The key phrase is crucial for maintaining the security and continuity of your identity on Dehati App. Generated uniquely for your device, it allows you to recover your original ID when switching devices or logging in from a different one, ensuring your identity remains recognizable. Unlike traditional recovery methods, the key phrase is a secure and simple way to verify your identity, making impersonation impossible. It does not restore saved contacts or messages, protecting your privacy and preventing unauthorized access. Remembering this key phrase simplifies account recovery and management, making it an essential part of securing your Dehati App account.',
+                  textAlign: TextAlign.justify,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
                   ),
                 ),
               ),
             ),
+            SizedBox(
+              height: 30,
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/username');
+                },
+                child: Text(
+                  'Generate',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF1A2247),
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                ),
+              ),
+            )
           ],
         ),
       ),
