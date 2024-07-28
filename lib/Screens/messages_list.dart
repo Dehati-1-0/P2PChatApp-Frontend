@@ -165,7 +165,7 @@ class MessagesList extends StatelessWidget {
                     icon: Icon(Icons.compass_calibration_outlined,
                         color: Colors.black),
                     onPressed: () {
-                      // Navigator.pushNamed(context, '/contacts');
+                      Navigator.pushNamed(context, '/discover');
                     },
                   ),
                   IconButton(
@@ -177,7 +177,7 @@ class MessagesList extends StatelessWidget {
                   IconButton(
                     icon: Icon(Icons.people_outline, color: Colors.black),
                     onPressed: () {
-                      // Navigator.pushNamed(context, '/contacts');
+                      Navigator.pushNamed(context, '/contacts');
                     },
                   ),
                 ],
