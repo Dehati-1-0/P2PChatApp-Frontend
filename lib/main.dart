@@ -16,6 +16,7 @@ import 'Screens/generated_id_page.dart';
 import 'Screens/welcome_page.dart';
 import 'Screens/settings.dart';
 import '../widgets/page_route.dart';
+import 'Screens/discover_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -62,8 +63,13 @@ class MyApp extends StatelessWidget {
             return SlideLeftRoute(page: SavedContacts());
           case '/generatedid':
             return SlideLeftRoute(page: GeneratedIdPage());
+<<<<<<< HEAD
           case '/settings':
             return SlideLeftRoute(page: SettingsPage());
+=======
+          case '/discover':
+            return SlideLeftRoute(page: DiscoverPage());
+>>>>>>> 3d8045cb826df8b394456e42bdc81ca883e21273
           default:
             return null;
         }

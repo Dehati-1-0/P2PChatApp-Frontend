@@ -126,6 +126,38 @@ class _MessagesListState extends State<MessagesList> {
                     : _buildGroupItems(context),
               ),
             ),
+<<<<<<< HEAD
+=======
+            Container(
+              color: Colors.blue,
+              padding: EdgeInsets.symmetric(vertical: 10),
+              // height: 60.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.compass_calibration_outlined,
+                        color: Colors.black),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/discover');
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.chat_bubble_outline, color: Colors.black),
+                    onPressed: () {
+                      // Navigator.pushNamed(context, '/contacts');
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.people_outline, color: Colors.black),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/contacts');
+                    },
+                  ),
+                ],
+              ),
+            )
+>>>>>>> 3d8045cb826df8b394456e42bdc81ca883e21273
           ],
         ),
       ),
