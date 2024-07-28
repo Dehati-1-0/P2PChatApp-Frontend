@@ -126,8 +126,7 @@ class _MessagesListState extends State<MessagesList> {
                     : _buildGroupItems(context),
               ),
             ),
-<<<<<<< HEAD
-=======
+
             Container(
               color: Colors.blue,
               padding: EdgeInsets.symmetric(vertical: 10),
@@ -157,7 +156,6 @@ class _MessagesListState extends State<MessagesList> {
                 ],
               ),
             )
->>>>>>> 3d8045cb826df8b394456e42bdc81ca883e21273
           ],
         ),
       ),
