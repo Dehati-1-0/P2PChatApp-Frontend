@@ -50,7 +50,7 @@ class LoginPage extends StatelessWidget {
 
             GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, '/phrase');
+                Navigator.pushNamed(context, '/existinguser');
               },
               child: Center(
                 child: Container(
