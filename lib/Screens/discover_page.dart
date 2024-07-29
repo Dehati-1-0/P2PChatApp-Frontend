@@ -21,7 +21,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Discover'),
+        title: Align(alignment: Alignment.centerLeft, child: Text('Discover')),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -31,96 +31,102 @@ class _DiscoverPageState extends State<DiscoverPage> {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(40.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    children: [
-                      Text("Username"),
-                      Text("ID"),
-                      CircleAvatar(
-                        backgroundImage: AssetImage(
-                            'assets/discover icons/cat.png'), // Replace with the current user's image
-                        radius: 30,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Column(
-                    children: [
-                      Text("Username"),
-                      Text("ID"),
-                      CircleAvatar(
-                        backgroundImage: AssetImage(
-                            'assets/discover icons/rabbit.png'), // Replace with the current user's image
-                        radius: 30,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Column(
-                    children: [
-                      Text("Username"),
-                      Text("ID"),
-                      CircleAvatar(
-                        backgroundImage: AssetImage(
-                            'assets/discover icons/gorilla.png'), // Replace with the current user's image
-                        radius: 30,
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      Text("Username"),
-                      Text("ID"),
-                      CircleAvatar(
-                        backgroundImage: AssetImage(
-                            'assets/discover icons/panda.png'), // Replace with the current user's image
-                        radius: 30,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 50,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Column(
-                    children: [
-                      Text("Username"),
-                      Text("ID"),
-                      CircleAvatar(
-                        backgroundImage: AssetImage(
-                            'assets/discover icons/meerkat.png'), // Replace with the current user's image
-                        radius: 30,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+      body: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('assets/discover icons/background.png'),
+                fit: BoxFit.cover)),
+        child: Padding(
+          padding: const EdgeInsets.all(40.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        Text("Username"),
+                        Text("ID"),
+                        CircleAvatar(
+                          backgroundImage: AssetImage(
+                              'assets/discover icons/cat.png'), // Replace with the current user's image
+                          radius: 30,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Column(
+                      children: [
+                        Text("Username"),
+                        Text("ID"),
+                        CircleAvatar(
+                          backgroundImage: AssetImage(
+                              'assets/discover icons/rabbit.png'), // Replace with the current user's image
+                          radius: 30,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      children: [
+                        Text("Username"),
+                        Text("ID"),
+                        CircleAvatar(
+                          backgroundImage: AssetImage(
+                              'assets/discover icons/gorilla.png'), // Replace with the current user's image
+                          radius: 30,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Text("Username"),
+                        Text("ID"),
+                        CircleAvatar(
+                          backgroundImage: AssetImage(
+                              'assets/discover icons/panda.png'), // Replace with the current user's image
+                          radius: 30,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 50,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Column(
+                      children: [
+                        Text("Username"),
+                        Text("ID"),
+                        CircleAvatar(
+                          backgroundImage: AssetImage(
+                              'assets/discover icons/meerkat.png'), // Replace with the current user's image
+                          radius: 30,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
