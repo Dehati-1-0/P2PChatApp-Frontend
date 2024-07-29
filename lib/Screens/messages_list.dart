@@ -27,7 +27,7 @@ class _MessagesListState extends State<MessagesList> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushNamed(context, '/existinguser');
           },
         ),
         actions: [
@@ -60,70 +60,11 @@ class _MessagesListState extends State<MessagesList> {
               ),
             ),
             SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _isChatsSelected = true;
-                      });
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        color: _isChatsSelected
-                            ? Color(0xFF1A2247)
-                            : Colors.grey[300],
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Chats',
-                        style: TextStyle(
-                          color: _isChatsSelected ? Colors.white : Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _isChatsSelected = false;
-                      });
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        color: !_isChatsSelected
-                            ? Color(0xFF1A2247)
-                            : Colors.grey[300],
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Groups',
-                        style: TextStyle(
-                          color:
-                              !_isChatsSelected ? Colors.white : Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
             Expanded(
               child: ListView(
-                children: _isChatsSelected
-                    ? _buildChatItems(context)
-                    : _buildGroupItems(context),
+                children: _buildChatItems(
+                  context,
+                ),
               ),
             ),
           ],
@@ -221,46 +162,6 @@ class _MessagesListState extends State<MessagesList> {
         'Wednesday',
         'assets/user5.png',
         false,
-      ),
-    ];
-  }
-
-  List<Widget> _buildGroupItems(BuildContext context) {
-    return [
-      _buildMessageItem(
-        context,
-        'Project Team',
-        'Meeting at 3 PM...',
-        '1h ago',
-        'assets/group1.png',
-        true,
-      ),
-      Divider(),
-      _buildMessageItem(
-        context,
-        'Family',
-        'Dinner at 8 PM...',
-        '2h ago',
-        'assets/group2.png',
-        false,
-      ),
-      Divider(),
-      _buildMessageItem(
-        context,
-        'Friends',
-        'Movie night?',
-        '3h ago',
-        'assets/group3.png',
-        false,
-      ),
-      Divider(),
-      _buildMessageItem(
-        context,
-        'Work Group',
-        'Deadline tomorrow...',
-        'Yesterday',
-        'assets/group4.png',
-        true,
       ),
     ];
   }

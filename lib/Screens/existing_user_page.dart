@@ -23,7 +23,7 @@ class WelcomeBackPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 30),
+            SizedBox(height: 10),
             Text(
               'WELCOME  BACK',
               textAlign: TextAlign.center,
@@ -35,7 +35,7 @@ class WelcomeBackPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Image.asset(
-              'assets/dehati_logo.png',
+              'assets/logo.png',
               height: 100,
             ),
             SizedBox(height: 20),
@@ -56,7 +56,7 @@ class WelcomeBackPage extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 20),
             Text(
               'Your QR Code',
               textAlign: TextAlign.center,
@@ -65,7 +65,7 @@ class WelcomeBackPage extends StatelessWidget {
                 color: Colors.grey,
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             Center(
               child: QrImageView(
                 data: '1234567',

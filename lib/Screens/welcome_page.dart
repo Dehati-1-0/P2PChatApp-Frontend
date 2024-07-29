@@ -1,6 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/gestures.dart';
+import 'agreement_page.dart';
 
 class WelcomeUserPage extends StatelessWidget {
+  void _navigateToAgreementPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AgreementPage()),
+    );
+  }
+
+  void _launchURL() async {
+    const url = 'https://example.com/privacy';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,7 +29,6 @@ class WelcomeUserPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Spacer(),
             SizedBox(height: 50),
             Text(
               'Welcome to Dehati',
@@ -20,17 +38,44 @@ class WelcomeUserPage extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
-            // SizedBox(height: 100),
             Spacer(),
             Image.asset(
               'assets/logo.png', // Replace with your image asset
               height: 200,
             ),
             Spacer(),
-            Text(
-              'Tap "Agree and Continue" to accept the Dehati Terms of Service and Privacy Policy.',
-              style: TextStyle(fontSize: 14, color: Colors.black54),
+            RichText(
               textAlign: TextAlign.center,
+              text: TextSpan(
+                style: TextStyle(fontSize: 14, color: Colors.black54),
+                children: [
+                  TextSpan(text: 'Tap "Agree and Continue" to accept the '),
+                  TextSpan(
+                    text: 'Dehati Terms of Service',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        _navigateToAgreementPage(context);
+                      },
+                  ),
+                  TextSpan(text: ' and '),
+                  TextSpan(
+                    text: 'Privacy Policy',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        _launchURL();
+                      },
+                  ),
+                  TextSpan(text: '.'),
+                ],
+              ),
             ),
             SizedBox(height: 10),
             SizedBox(
@@ -38,7 +83,7 @@ class WelcomeUserPage extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.pushReplacementNamed(
-                      context, '/agreement'); // Replace with your route
+                      context, '/login'); // Replace with your route
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF1A2247), // Button color

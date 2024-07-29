@@ -6,7 +6,8 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
@@ -19,7 +20,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(CurvedAnimation(
+    _scaleAnimation =
+        Tween<double>(begin: 0.5, end: 1.0).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOut,
     ));
@@ -70,9 +72,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  'centuries, but also the leap into electronic\n'
-                  'typesetting, remaining essentially unchanged.\n'
-                  'It was popularised',
+                  'Discardable (Decentralized) Encrypted Host-based Application Level Tunneling Infrastructure\n',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,

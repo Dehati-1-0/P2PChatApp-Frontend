@@ -8,7 +8,7 @@ class ChatPage extends StatelessWidget {
   ChatPage({
     required this.userName,
     required this.userAvatar,
-    required this.isOnline,
+    this.isOnline = false,
   });
 
   @override
@@ -25,7 +25,10 @@ class ChatPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(userName, style: TextStyle(color: Colors.black)),
-                Text(isOnline ? 'Online' : 'Offline', style: TextStyle(color: isOnline ? Colors.green : Colors.red, fontSize: 12)),
+                Text(isOnline ? 'Online' : 'Offline',
+                    style: TextStyle(
+                        color: isOnline ? Colors.green : Colors.red,
+                        fontSize: 12)),
               ],
             ),
           ],
@@ -38,24 +41,25 @@ class ChatPage extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.more_vert, color: Colors.black),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: Column(
         children: [
+          SizedBox(height: 10), // Add SizedBox here
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(16.0),
               children: [
-                _buildReceivedMessage('Hi, How\'s work been lately ?', userAvatar),
-                _buildSentMessage('Hey ! it\'s been alright, just the usual grind. How about you ?'),
-                _buildReceivedMessage('Not too bad. I\'ve been working on a few Projects', userAvatar),
-                _buildSentMessage('That sounds interesting. Anything exciting ?'),
-                _buildReceivedMessage('Typing.........', userAvatar),
+                _buildReceivedMessage(
+                    context, 'Hi, How\'s work been lately ?', userAvatar),
+                _buildSentMessage(context,
+                    'Hey ! it\'s been alright, just the usual grind. How about you ?'),
+                _buildReceivedMessage(
+                    context,
+                    'Not too bad. I\'ve been working on a few Projects',
+                    userAvatar),
+                _buildSentMessage(
+                    context, 'That sounds interesting. Anything exciting ?'),
+                _buildReceivedMessage(context, 'Typing.........', userAvatar),
               ],
             ),
           ),
@@ -65,43 +69,52 @@ class ChatPage extends StatelessWidget {
     );
   }
 
-  Widget _buildReceivedMessage(String message, String avatarPath) {
+  Widget _buildReceivedMessage(
+      BuildContext context, String message, String avatarPath) {
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 10),
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.grey[300],
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          children: [
-            CircleAvatar(
-              backgroundImage: AssetImage(avatarPath),
-              radius: 15,
-            ),
-            SizedBox(width: 10),
-            Text(message),
-          ],
+      child: ConstrainedBox(
+        constraints:
+            BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 20),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              CircleAvatar(
+                backgroundImage: AssetImage(avatarPath),
+                radius: 15,
+              ),
+              SizedBox(width: 10),
+              Expanded(child: Text(message)),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildSentMessage(String message) {
+  Widget _buildSentMessage(BuildContext context, String message) {
     return Align(
       alignment: Alignment.centerRight,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 10),
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Color(0xFF0A174E),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Text(
-          message,
-          style: TextStyle(color: Colors.white),
+      child: ConstrainedBox(
+        constraints:
+            BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 20),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Color(0xFF0A174E),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            message,
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ),
     );
@@ -109,23 +122,37 @@ class ChatPage extends StatelessWidget {
 
   Widget _buildMessageInput() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.all(8.0),
       color: Colors.white,
       child: Row(
         children: [
           Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Type a message........',
-                border: InputBorder.none,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Type a message...',
+                  border: InputBorder.none,
+                ),
               ),
             ),
           ),
-          IconButton(
-            icon: Icon(Icons.send, color: Color(0xFF0A174E)),
-            onPressed: () {
-              // Handle send message action
-            },
+          SizedBox(width: 8),
+          Container(
+            decoration: BoxDecoration(
+              color: Color(0xFF0A174E),
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              icon: Icon(Icons.send, color: Colors.white),
+              onPressed: () {
+                // Handle send message action
+              },
+            ),
           ),
         ],
       ),

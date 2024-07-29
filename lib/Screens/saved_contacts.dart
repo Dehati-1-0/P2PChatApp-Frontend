@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widgets/custom_app_bar.dart';
+import 'chat_page.dart'; // Import the ChatPage
 
 class SavedContacts extends StatefulWidget {
   @override
@@ -9,6 +9,7 @@ class SavedContacts extends StatefulWidget {
 class _SavedContactsState extends State<SavedContacts> {
   bool _isChatsSelected = true;
   int _selectedIndex = 2;
+
   void _onBottomNavItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -26,7 +27,7 @@ class _SavedContactsState extends State<SavedContacts> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushNamed(context, '/messages');
           },
         ),
       ),
@@ -50,13 +51,20 @@ class _SavedContactsState extends State<SavedContacts> {
             Expanded(
               child: ListView(
                 children: [
-                  _buildContactItem('Jhon Smith', 'assets/user1.png'),
-                  _buildContactItem('Caren Simons', 'assets/user2.png'),
-                  _buildContactItem('Peter Parker', 'assets/user3.png'),
-                  _buildContactItem('Tony Stark', 'assets/user4.png'),
-                  _buildContactItem('Brews Wain', 'assets/user5.png'),
-                  _buildContactItem('Benjamin Tenison', 'assets/user6.png'),
-                  _buildContactItem('Maxwell Woods', 'assets/user7.png'),
+                  _buildContactItem(
+                      context, 'John Smith', 'assets/user1.png', true),
+                  _buildContactItem(
+                      context, 'Caren Simons', 'assets/user2.png', false),
+                  _buildContactItem(
+                      context, 'Peter Parker', 'assets/user3.png', true),
+                  _buildContactItem(
+                      context, 'Tony Stark', 'assets/user4.png', false),
+                  _buildContactItem(
+                      context, 'Brews Wain', 'assets/user5.png', true),
+                  _buildContactItem(
+                      context, 'Benjamin Tenison', 'assets/user6.png', false),
+                  _buildContactItem(
+                      context, 'Maxwell Woods', 'assets/user7.png', true),
                 ],
               ),
             ),
@@ -79,6 +87,7 @@ class _SavedContactsState extends State<SavedContacts> {
                   ),
                   onPressed: () {
                     _onBottomNavItemTapped(0);
+                    Navigator.pushNamed(context, '/discover');
                   },
                 ),
                 IconButton(
@@ -109,14 +118,41 @@ class _SavedContactsState extends State<SavedContacts> {
     );
   }
 
-  Widget _buildContactItem(String name, String avatarPath) {
+  Widget _buildContactItem(
+      BuildContext context, String name, String avatarPath, bool isOnline) {
     return ListTile(
-      leading: CircleAvatar(
-        backgroundImage: AssetImage(avatarPath),
+      leading: Stack(
+        children: [
+          CircleAvatar(
+            backgroundImage: AssetImage(avatarPath),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(
+                color: isOnline ? Colors.green : Colors.red,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 2),
+              ),
+            ),
+          ),
+        ],
       ),
       title: Text(name),
       onTap: () {
-        // Handle contact item tap
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatPage(
+              userName: name,
+              userAvatar: avatarPath,
+              isOnline: isOnline,
+            ),
+          ),
+        );
       },
     );
   }

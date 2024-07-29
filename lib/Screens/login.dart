@@ -7,7 +7,7 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -82,7 +82,7 @@ class LoginPage extends StatelessWidget {
               height: 20,
             ),
             Text(
-              "Tap below to create your unique key phrase and get started!",
+              "Tap below to create your unique identity and get started!",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
@@ -94,7 +94,7 @@ class LoginPage extends StatelessWidget {
                 Navigator.pushNamed(context, '/keyphrase');
               },
               child: Text(
-                'Generate unique key phrase',
+                'Generate unique identity',
                 style: TextStyle(color: Colors.white, fontSize: 16),
               ),
               style: ElevatedButton.styleFrom(

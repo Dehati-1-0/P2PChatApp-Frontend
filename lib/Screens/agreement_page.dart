@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../widgets/custom_app_bar.dart';
 
 class AgreementPage extends StatelessWidget {
@@ -46,26 +45,26 @@ class AgreementPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            Center(
-              child: InkWell(
-                onTap: () async {
-                  const url = 'https://www.whatsapp.com/legal/privacy-policy';
-                  if (await canLaunch(url)) {
-                    await launch(url);
-                  } else {
-                    throw 'Could not launch $url';
-                  }
-                },
-                child: Text(
-                  'Read full Terms and Conditions',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 14,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),
-            ),
+            // Center(
+            //   child: InkWell(
+            //     onTap: () async {
+            //       const url = 'https://www.whatsapp.com/legal/privacy-policy';
+            //       if (await canLaunch(url)) {
+            //         await launch(url);
+            //       } else {
+            //         throw 'Could not launch $url';
+            //       }
+            //     },
+            //     child: Text(
+            //       'Read full Terms and Conditions',
+            //       style: TextStyle(
+            //         color: Colors.blue,
+            //         fontSize: 14,
+            //         decoration: TextDecoration.underline,
+            //       ),
+            //     ),
+            //   ),
+            // ),
             SizedBox(height: 20),
           ],
         ),

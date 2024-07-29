@@ -12,10 +12,12 @@ import 'Screens/agreement_page.dart';
 import 'Screens/key_phrase_page.dart';
 import 'Screens/existing_user_page.dart';
 import 'Screens/new_user_page.dart';
-import 'Screens/generated_id_page.dart';
+import 'Screens/generated_phrase_page.dart';
 import 'Screens/welcome_page.dart';
 import 'Screens/settings.dart';
+import 'Screens/generated_id_page.dart';
 import '../widgets/page_route.dart';
+import 'responsive_utils.dart';
 import 'Screens/discover_page.dart';
 
 void main() {
@@ -61,10 +63,12 @@ class MyApp extends StatelessWidget {
             return SlideLeftRoute(page: MessagesList());
           case '/contacts':
             return SlideLeftRoute(page: SavedContacts());
-          case '/generatedid':
-            return SlideLeftRoute(page: GeneratedIdPage());
+          case '/generatedphrase':
+            return SlideLeftRoute(page: GeneratedPhrasePage());
           case '/settings':
             return SlideLeftRoute(page: SettingsPage());
+          case '/generatedid':
+          return SlideLeftRoute(page: GeneratedIdPage());
           case '/discover':
             return SlideLeftRoute(page: DiscoverPage());
 

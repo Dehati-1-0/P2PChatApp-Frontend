@@ -1,63 +1,105 @@
 import 'package:flutter/material.dart';
-import '../widgets/custom_app_bar.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
-// want id and the user name to be displayed.
 class GeneratedIdPage extends StatelessWidget {
+  final String userId = 'Psd5588'; // Replace with the actual user ID
+  final String userName = 'John Doe'; // Replace with the actual user name
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Image.asset(
-              'assets/dehati_logo.png',
-              height: 150,
-            ),
-            SizedBox(height: 30),
+            SizedBox(height: 10),
             Text(
-              'Your ID and UserName',
+              'WELCOME',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 25,
+                fontSize: 40,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Color(0xFF0A174E),
               ),
             ),
-            SizedBox(height: 30),
+            SizedBox(height: 20),
+            Image.asset(
+              'assets/logo.png',
+              height: 100,
+            ),
+            SizedBox(height: 20),
             Text(
-              'ID: 1234567890',
+              'This is your id: $userId',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 16,
                 color: Colors.black,
               ),
             ),
             SizedBox(height: 10),
             Text(
-              'Username: John Doe',
+              'This is your username: $userName',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 16,
                 color: Colors.black,
               ),
             ),
-            SizedBox(height: 70),
+            SizedBox(height: 20),
+            Text(
+              'Your QR Code',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+            ),
+            SizedBox(height: 10),
+            Center(
+              child: QrImageView(
+                data: '1234567',
+                version: QrVersions.auto,
+                size: 200.0,
+              ),
+            ),
+            SizedBox(height: 20),
+            Spacer(),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/newuser');
+                Navigator.pushNamed(context, '/messages');
               },
               child: Text(
-                'Continue',
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                'Next',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF1A2247),
                 padding: EdgeInsets.symmetric(vertical: 16),
               ),
             ),
+            // Center(
+            //   child: Text(
+            //     'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+            //     textAlign: TextAlign.center,
+            //     style: TextStyle(color: Colors.grey),
+            //   ),
+            // ),
+            SizedBox(height: 20),
           ],
         ),
       ),

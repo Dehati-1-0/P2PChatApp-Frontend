@@ -38,10 +38,10 @@ class UserName extends StatelessWidget {
               SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/description');
+                  Navigator.pushNamed(context, '/generatedid');
                 },
                 child: Text(
-                  'Generated unique ID',
+                  'Next',
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 style: ElevatedButton.styleFrom(

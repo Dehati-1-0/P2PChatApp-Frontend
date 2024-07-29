@@ -43,7 +43,7 @@ class KeyPhrasePage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/username');
+                  Navigator.pushNamed(context, '/generatedphrase');
                 },
                 child: Text(
                   'Generate',
