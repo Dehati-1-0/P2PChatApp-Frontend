@@ -21,7 +21,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Discover'),
+        title: Align(alignment: Alignment.centerLeft, child: Text('Discover')),
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -31,288 +31,102 @@ class _DiscoverPageState extends State<DiscoverPage> {
           },
         ),
       ),
-      body: SingleChildScrollView(
+      body: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('assets/discover icons/background.png'),
+                fit: BoxFit.cover)),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(40.0, 10, 40, 10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search Here',
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                  ),
-                  fillColor: Colors.transparent,
-                  filled: true,
+          padding: const EdgeInsets.all(40.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        Text("Username"),
+                        Text("ID"),
+                        CircleAvatar(
+                          backgroundImage: AssetImage(
+                              'assets/discover icons/cat.png'), // Replace with the current user's image
+                          radius: 30,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-              Container(
-                height: 1,
-                width: double.infinity,
-                color: Colors.black,
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Column(
-                children: [
-                  //first row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                        height: 130,
-                        width: 130,
-                        decoration: BoxDecoration(
-                            color: Color.fromARGB(61, 135, 136, 144)
-                                .withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'assets/current_user.jpg'), // Replace with the current user's image
-                              radius: 30,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              'Username', // Replace with the actual username
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text("User id") // Replace with the actual user id
-                          ],
+                SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Column(
+                      children: [
+                        Text("Username"),
+                        Text("ID"),
+                        CircleAvatar(
+                          backgroundImage: AssetImage(
+                              'assets/discover icons/rabbit.png'), // Replace with the current user's image
+                          radius: 30,
                         ),
-                      ),
-                      Container(
-                        height: 130,
-                        width: 130,
-                        decoration: BoxDecoration(
-                            color: Color.fromARGB(61, 135, 136, 144)
-                                .withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'assets/current_user.jpg'), // Replace with the current user's image
-                              radius: 30,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              'Username', // Replace with the actual username
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text("User id") // Replace with the actual user id
-                          ],
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      children: [
+                        Text("Username"),
+                        Text("ID"),
+                        CircleAvatar(
+                          backgroundImage: AssetImage(
+                              'assets/discover icons/gorilla.png'), // Replace with the current user's image
+                          radius: 30,
                         ),
-                      )
-                    ],
-                  ),
-                  //second row
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                        height: 130,
-                        width: 130,
-                        decoration: BoxDecoration(
-                            color: Color.fromARGB(61, 135, 136, 144)
-                                .withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'assets/current_user.jpg'), // Replace with the current user's image
-                              radius: 30,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              'Username', // Replace with the actual username
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text("User id") // Replace with the actual user id
-                          ],
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Text("Username"),
+                        Text("ID"),
+                        CircleAvatar(
+                          backgroundImage: AssetImage(
+                              'assets/discover icons/panda.png'), // Replace with the current user's image
+                          radius: 30,
                         ),
-                      ),
-                      Container(
-                        height: 130,
-                        width: 130,
-                        decoration: BoxDecoration(
-                            color: Color.fromARGB(61, 135, 136, 144)
-                                .withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'assets/current_user.jpg'), // Replace with the current user's image
-                              radius: 30,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              'Username', // Replace with the actual username
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text("User id") // Replace with the actual user id
-                          ],
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 50,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Column(
+                      children: [
+                        Text("Username"),
+                        Text("ID"),
+                        CircleAvatar(
+                          backgroundImage: AssetImage(
+                              'assets/discover icons/meerkat.png'), // Replace with the current user's image
+                          radius: 30,
                         ),
-                      )
-                    ],
-                  ),
-                  //third row
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                        height: 130,
-                        width: 130,
-                        decoration: BoxDecoration(
-                            color: Color.fromARGB(61, 135, 136, 144)
-                                .withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'assets/current_user.jpg'), // Replace with the current user's image
-                              radius: 30,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              'Username', // Replace with the actual username
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text("User id") // Replace with the actual user id
-                          ],
-                        ),
-                      ),
-                      Container(
-                        height: 130,
-                        width: 130,
-                        decoration: BoxDecoration(
-                            color: Color.fromARGB(61, 135, 136, 144)
-                                .withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'assets/current_user.jpg'), // Replace with the current user's image
-                              radius: 30,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              'Username', // Replace with the actual username
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text("User id") // Replace with the actual user id
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                        height: 130,
-                        width: 130,
-                        decoration: BoxDecoration(
-                            color: Color.fromARGB(61, 135, 136, 144)
-                                .withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'assets/current_user.jpg'), // Replace with the current user's image
-                              radius: 30,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              'Username', // Replace with the actual username
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text("User id") // Replace with the actual user id
-                          ],
-                        ),
-                      ),
-                      Container(
-                        height: 130,
-                        width: 130,
-                        decoration: BoxDecoration(
-                            color: Color.fromARGB(61, 135, 136, 144)
-                                .withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'assets/current_user.jpg'), // Replace with the current user's image
-                              radius: 30,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              'Username', // Replace with the actual username
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text("User id") // Replace with the actual user id
-                          ],
-                        ),
-                      )
-                    ],
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 30,
-              ),
-            ],
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
