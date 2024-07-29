@@ -76,6 +76,15 @@ flutter:
     - assets/user7.png
     - assets/current_user.jpg
     - assets/logo.png
+    - assets/discover icons/bear.png
+    - assets/discover icons/cat.png
+    - assets/discover icons/chicken.png
+    - assets/discover icons/fox.png
+    - assets/discover icons/dog.png
+    - assets/discover icons/gorilla.png
+    - assets/discover icons/meerkat.png
+    - assets/discover icons/panda.png
+    - assets/discover icons/rabbit.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
