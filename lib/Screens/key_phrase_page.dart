@@ -12,7 +12,7 @@ class KeyPhrasePage extends StatelessWidget {
         child: Column(
           children: [
             const Text(
-              "Why We Need Your ID & Key Phrase?",
+              "Why We Need Unique Identity?",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
             ),
@@ -49,7 +49,7 @@ class KeyPhrasePage extends StatelessWidget {
                         ),
                         TextSpan(
                           text:
-                              "This serves as your digital identity, helping others find you while keeping your personal details private.\n\n",
+                              "This is your personal digital identity on the Dehati App.This ID is unique to you and ensures that you are easily recognizable by others while maintaining your anonymity and privacy.\n\n",
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.black,
@@ -65,7 +65,7 @@ class KeyPhrasePage extends StatelessWidget {
                         ),
                         TextSpan(
                           text:
-                              "A unique phrase for security, allowing you to recover your ID when changing or logging into a new device. This maintains your identity without recovering old contacts.",
+                              "A unique phrase for security, allowing you to recover your ID when changing or logging into a new device. This maintains your identity without recovering old contacts.It’s important to keep this phrase safe and secure because you won’t be able to retrieve it later. Remember, this phrase helps you recover your account but doesn’t restore old contacts or information. Store it in a safe place to ensure you can access your account whenever needed.",
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.black,

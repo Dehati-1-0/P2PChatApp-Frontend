@@ -14,7 +14,7 @@ class WelcomeBackPage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushNamed(context, '/login');
           },
         ),
       ),
