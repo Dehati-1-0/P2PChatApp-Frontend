@@ -22,7 +22,7 @@ class _DiscoverPageState extends State<DiscoverPage>
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(
+    _scaleAnimation = Tween<double>(begin: 1, end: 1.2).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
@@ -83,8 +83,7 @@ class _DiscoverPageState extends State<DiscoverPage>
                   child: Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image:
-                            AssetImage('assets/discover icons/background.png'),
+                        image: AssetImage('assets/discover_background.png'),
                         fit: BoxFit.cover,
                       ),
                     ),
