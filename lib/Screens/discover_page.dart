@@ -22,7 +22,7 @@ class _DiscoverPageState extends State<DiscoverPage>
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(begin: 1, end: 1.2).animate(
+    _scaleAnimation = Tween<double>(begin: 1, end: 1.05).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
