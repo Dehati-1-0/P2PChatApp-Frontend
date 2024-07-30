@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'chat_page.dart'; // Import the ChatPage
 
 class DiscoverPage extends StatefulWidget {
   @override
@@ -21,7 +22,7 @@ class _DiscoverPageState extends State<DiscoverPage>
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(begin: 1, end: 1.5).animate(
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
@@ -40,6 +41,20 @@ class _DiscoverPageState extends State<DiscoverPage>
       _selectedIndex = index;
       _isChatsSelected = index == 0;
     });
+  }
+
+  void _navigateToChatPage(
+      BuildContext context, String name, String avatarPath, bool isOnline) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatPage(
+          userName: name,
+          userAvatar: avatarPath,
+          isOnline: isOnline,
+        ),
+      ),
+    );
   }
 
   @override
@@ -92,10 +107,16 @@ class _DiscoverPageState extends State<DiscoverPage>
                           children: [
                             Text("Username"),
                             Text("ID"),
-                            CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'assets/discover icons/cat.png'), // Replace with the current user's image
-                              radius: 30,
+                            GestureDetector(
+                              onTap: () {
+                                _navigateToChatPage(context, 'John Smith',
+                                    'assets/user1.png', true);
+                              },
+                              child: CircleAvatar(
+                                backgroundImage:
+                                    AssetImage('assets/discover icons/cat.png'),
+                                radius: 30,
+                              ),
                             ),
                           ],
                         ),
@@ -109,10 +130,16 @@ class _DiscoverPageState extends State<DiscoverPage>
                           children: [
                             Text("Username"),
                             Text("ID"),
-                            CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'assets/discover icons/rabbit.png'), // Replace with the current user's image
-                              radius: 30,
+                            GestureDetector(
+                              onTap: () {
+                                _navigateToChatPage(context, 'Caren Simons',
+                                    'assets/user2.png', false);
+                              },
+                              child: CircleAvatar(
+                                backgroundImage: AssetImage(
+                                    'assets/discover icons/rabbit.png'),
+                                radius: 30,
+                              ),
                             ),
                           ],
                         ),
@@ -126,10 +153,16 @@ class _DiscoverPageState extends State<DiscoverPage>
                           children: [
                             Text("Username"),
                             Text("ID"),
-                            CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'assets/discover icons/gorilla.png'), // Replace with the current user's image
-                              radius: 30,
+                            GestureDetector(
+                              onTap: () {
+                                _navigateToChatPage(context, 'Peter Parker',
+                                    'assets/user3.png', true);
+                              },
+                              child: CircleAvatar(
+                                backgroundImage: AssetImage(
+                                    'assets/discover icons/gorilla.png'),
+                                radius: 30,
+                              ),
                             ),
                           ],
                         ),
@@ -137,10 +170,16 @@ class _DiscoverPageState extends State<DiscoverPage>
                           children: [
                             Text("Username"),
                             Text("ID"),
-                            CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'assets/discover icons/panda.png'), // Replace with the current user's image
-                              radius: 30,
+                            GestureDetector(
+                              onTap: () {
+                                _navigateToChatPage(context, 'Tony Stark',
+                                    'assets/user4.png', false);
+                              },
+                              child: CircleAvatar(
+                                backgroundImage: AssetImage(
+                                    'assets/discover icons/panda.png'),
+                                radius: 30,
+                              ),
                             ),
                           ],
                         ),
@@ -154,10 +193,16 @@ class _DiscoverPageState extends State<DiscoverPage>
                           children: [
                             Text("Username"),
                             Text("ID"),
-                            CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  'assets/discover icons/meerkat.png'), // Replace with the current user's image
-                              radius: 30,
+                            GestureDetector(
+                              onTap: () {
+                                _navigateToChatPage(context, 'Brews Wain',
+                                    'assets/user5.png', true);
+                              },
+                              child: CircleAvatar(
+                                backgroundImage: AssetImage(
+                                    'assets/discover icons/meerkat.png'),
+                                radius: 30,
+                              ),
                             ),
                           ],
                         ),
