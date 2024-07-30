@@ -23,6 +23,7 @@ class WelcomeUserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -51,7 +52,7 @@ class WelcomeUserPage extends StatelessWidget {
                 children: [
                   TextSpan(text: 'Tap "Agree and Continue" to accept the '),
                   TextSpan(
-                    text: 'Dehati Terms of Service',
+                    text: 'Dehati Terms of Service & Privacy Policy',
                     style: TextStyle(
                       color: Colors.blue,
                       decoration: TextDecoration.underline,
@@ -59,18 +60,6 @@ class WelcomeUserPage extends StatelessWidget {
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         _navigateToAgreementPage(context);
-                      },
-                  ),
-                  TextSpan(text: ' and '),
-                  TextSpan(
-                    text: 'Privacy Policy',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      decoration: TextDecoration.underline,
-                    ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        _launchURL();
                       },
                   ),
                   TextSpan(text: '.'),

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class GeneratedIdPage extends StatelessWidget {
-  final String userId = 'Psd5588'; // Replace with the actual user ID
+  final String userId = 'Joh558812'; // Replace with the actual user ID
   final String userName = 'John Doe'; // Replace with the actual user name
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -68,7 +69,7 @@ class GeneratedIdPage extends StatelessWidget {
             SizedBox(height: 10),
             Center(
               child: QrImageView(
-                data: '1234567',
+                data: 'Joh558812',
                 version: QrVersions.auto,
                 size: 200.0,
               ),

@@ -6,6 +6,7 @@ class GeneratedPhrasePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -28,7 +29,7 @@ class GeneratedPhrasePage extends StatelessWidget {
             ),
             SizedBox(height: 30),
             Text(
-              'I like dogs',
+              'Mango Tree Peaceful Have want',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 25,

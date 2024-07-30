@@ -20,6 +20,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Align(alignment: Alignment.centerLeft, child: Text('Discover')),
         backgroundColor: Colors.transparent,

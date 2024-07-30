@@ -5,6 +5,7 @@ class GeneratePhrasePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -55,7 +56,7 @@ class GeneratePhrasePage extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                   Navigator.pushNamed(context, '/username');
+                Navigator.pushNamed(context, '/username');
               },
               child: Text(
                 'Re Generate',

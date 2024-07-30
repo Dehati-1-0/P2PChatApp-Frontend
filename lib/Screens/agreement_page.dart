@@ -5,6 +5,7 @@ class AgreementPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -20,8 +21,7 @@ class AgreementPage extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Text(
                   'Last Updated: 20/07/2024.\n'
-                  'By using our services, you agree to be bound by our Terms and Conditions and Privacy Policy. You are responsible for your account and all activities under it. We prioritize your privacy with end-to-end encryption, though no system is 100% secure. Do not use Dehati App for unlawful purposes. All content is owned by us or our licensors, and you may use the app for personal, non-commercial purposes only. We may terminate your access without notice for violations. The app is provided "as is," and we are not liable for indirect or consequential damages. Continued use signifies acceptance of any updates to these terms.\n'
-                  'For the full Terms and Conditions, please visit the link below.',
+                  'By using our services, you agree to be bound by our Terms and Conditions and Privacy Policy. You are responsible for your account and all activities under it. We prioritize your privacy with end-to-end encryption, though no system is 100% secure. Do not use Dehati App for unlawful purposes. All content is owned by us or our licensors, and you may use the app for personal, non-commercial purposes only. We may terminate your access without notice for violations. The app is provided "as is," and we are not liable for indirect or consequential damages. Continued use signifies acceptance of any updates to these terms.\n',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,

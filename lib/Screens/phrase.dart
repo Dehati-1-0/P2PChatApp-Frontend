@@ -5,6 +5,7 @@ class PhrasePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -56,7 +57,7 @@ class PhrasePage extends StatelessWidget {
                 backgroundColor: Color(0xFF0A174E),
                 padding: EdgeInsets.symmetric(vertical: 16),
               ),
-            ), 
+            ),
           ],
         ),
       ),
