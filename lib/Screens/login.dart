@@ -20,10 +20,10 @@ class LoginPage extends StatelessWidget {
               height: 100,
             ),
             SizedBox(
-              height: 40,
+              height: 20,
             ),
             Text(
-              "Enter your phrase here",
+              "Enter your Private Key",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
             SizedBox(
@@ -40,7 +40,6 @@ class LoginPage extends StatelessWidget {
             SizedBox(
               height: 30,
             ),
-
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/existinguser');
@@ -54,6 +53,35 @@ class LoginPage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 16),
               ),
             ),
+            SizedBox(
+              height: 10,
+            ),
+            Center(
+                child: Text(
+              "Or",
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color.fromARGB(61, 135, 136, 144).withOpacity(0.3)),
+            )),
+            SizedBox(
+              height: 10,
+            ),
+            //this text should be clickable and should navigate to the QR code generate page
+            Center(
+                child: InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, '/qrcode');
+              },
+              child: Text(
+                "Scan QR Code",
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1A2247)),
+              ),
+            )),
+
             SizedBox(
               height: 40,
             ),

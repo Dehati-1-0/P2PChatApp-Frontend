@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'chat_page.dart'; // Import the ChatPage
+import 'empty_chats_page.dart'; // Import the ChatPage
 
 class DiscoverPage extends StatefulWidget {
   @override
@@ -43,15 +43,14 @@ class _DiscoverPageState extends State<DiscoverPage>
     });
   }
 
-  void _navigateToChatPage(
-      BuildContext context, String name, String avatarPath, bool isOnline) {
+  void _navigateToEmptyChatPage(
+      BuildContext context, String username, String avatarPath) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ChatPage(
-          userName: name,
-          userAvatar: avatarPath,
-          isOnline: isOnline,
+        builder: (context) => EmptyChatsPage(
+          username: username,
+          avatarPath: avatarPath,
         ),
       ),
     );
@@ -105,12 +104,12 @@ class _DiscoverPageState extends State<DiscoverPage>
                       children: [
                         Column(
                           children: [
-                            Text("Username"),
-                            Text("ID"),
+                            Text("Mexxi"),
+                            Text("Mex714866"),
                             GestureDetector(
                               onTap: () {
-                                _navigateToChatPage(context, 'John Smith',
-                                    'assets/user1.png', true);
+                                _navigateToEmptyChatPage(
+                                    context, 'Mexxi', 'assets/user1.png');
                               },
                               child: CircleAvatar(
                                 backgroundImage:
@@ -128,12 +127,15 @@ class _DiscoverPageState extends State<DiscoverPage>
                       children: [
                         Column(
                           children: [
-                            Text("Username"),
-                            Text("ID"),
+                            Text("Andrid"),
+                            Text("And7957148"),
                             GestureDetector(
                               onTap: () {
-                                _navigateToChatPage(context, 'Caren Simons',
-                                    'assets/user2.png', false);
+                                _navigateToEmptyChatPage(
+                                  context,
+                                  'Andrid',
+                                  'assets/user2.png',
+                                );
                               },
                               child: CircleAvatar(
                                 backgroundImage: AssetImage(
@@ -151,12 +153,15 @@ class _DiscoverPageState extends State<DiscoverPage>
                       children: [
                         Column(
                           children: [
-                            Text("Username"),
-                            Text("ID"),
+                            Text("Europia"),
+                            Text("Euro234589"),
                             GestureDetector(
                               onTap: () {
-                                _navigateToChatPage(context, 'Peter Parker',
-                                    'assets/user3.png', true);
+                                _navigateToEmptyChatPage(
+                                  context,
+                                  'Europia',
+                                  'assets/user3.png',
+                                );
                               },
                               child: CircleAvatar(
                                 backgroundImage: AssetImage(
@@ -168,12 +173,15 @@ class _DiscoverPageState extends State<DiscoverPage>
                         ),
                         Column(
                           children: [
-                            Text("Username"),
-                            Text("ID"),
+                            Text("Deamon"),
+                            Text("Dea7892215"),
                             GestureDetector(
                               onTap: () {
-                                _navigateToChatPage(context, 'Tony Stark',
-                                    'assets/user4.png', false);
+                                _navigateToEmptyChatPage(
+                                  context,
+                                  'Deamon',
+                                  'assets/user4.png',
+                                );
                               },
                               child: CircleAvatar(
                                 backgroundImage: AssetImage(
@@ -191,12 +199,15 @@ class _DiscoverPageState extends State<DiscoverPage>
                       children: [
                         Column(
                           children: [
-                            Text("Username"),
-                            Text("ID"),
+                            Text("Raheena"),
+                            Text("Rah4596612"),
                             GestureDetector(
                               onTap: () {
-                                _navigateToChatPage(context, 'Brews Wain',
-                                    'assets/user5.png', true);
+                                _navigateToEmptyChatPage(
+                                  context,
+                                  'Raheena',
+                                  'assets/user5.png',
+                                );
                               },
                               child: CircleAvatar(
                                 backgroundImage: AssetImage(

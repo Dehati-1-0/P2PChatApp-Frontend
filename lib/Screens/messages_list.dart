@@ -149,10 +149,10 @@ class _MessagesListState extends State<MessagesList> {
       Divider(),
       _buildMessageItem(
         context,
-        'Jhone Wilson',
+        'qGSIb3DQE..',
         'Not too bad. I\'ve been working on...',
         'Yesterday',
-        'assets/user4.png',
+        '',
         true,
       ),
       Divider(),
@@ -162,6 +162,15 @@ class _MessagesListState extends State<MessagesList> {
         'Not too bad. I\'ve been working on...',
         'Wednesday',
         'assets/user5.png',
+        false,
+      ),
+      Divider(),
+      _buildMessageItem(
+        context,
+        'MIGeMA...',
+        'Not too bad. I\'ve been working on...',
+        'Wednesday',
+        '',
         false,
       ),
     ];

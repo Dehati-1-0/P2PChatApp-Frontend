@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class GeneratedIdPage extends StatelessWidget {
-  final String userId = 'Joh558812'; // Replace with the actual user ID
-  final String userName = 'John Doe'; // Replace with the actual user name
+  // final String userId = 'Joh558812'; // Replace with the actual user ID
+  final String userName =
+      'Rhaenyra Targaryen'; // Replace with the actual user name
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +41,14 @@ class GeneratedIdPage extends StatelessWidget {
               height: 100,
             ),
             SizedBox(height: 20),
-            Text(
-              'This is your id: $userId',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-              ),
-            ),
+            // Text(
+            //   'This is your id: $userId',
+            //   textAlign: TextAlign.center,
+            //   style: TextStyle(
+            //     fontSize: 16,
+            //     color: Colors.black,
+            //   ),
+            // ),
             SizedBox(height: 10),
             Text(
               'This is your username: $userName',
@@ -59,7 +60,7 @@ class GeneratedIdPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Text(
-              'Your QR Code',
+              'Your Public Key',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
@@ -69,7 +70,8 @@ class GeneratedIdPage extends StatelessWidget {
             SizedBox(height: 10),
             Center(
               child: QrImageView(
-                data: 'Joh558812',
+                data:
+                    'MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgH95JCEmG0wn6TTO6F3TxjrjCyrr/fvQUnBLv0n8qu1Ys6TfKdhjC1f4FWNsviLcgrtY9XWzZ9LjfZQ1DA1M1nEUzrGXcQDsK3YgGeyCKtpLpzz5z0n63oDUChS9UQqRFlpNZecda39Pg5OOqoiLVBKGqzRtVZsPpapYIbzpJ2zFAgMBAAE=',
                 version: QrVersions.auto,
                 size: 200.0,
               ),

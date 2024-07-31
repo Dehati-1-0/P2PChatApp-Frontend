@@ -18,6 +18,9 @@ import 'Screens/settings.dart';
 import 'Screens/generated_id_page.dart';
 import '../widgets/page_route.dart';
 import 'responsive_utils.dart';
+import 'Screens/empty_chats_page.dart';
+import 'Screens/qrcode_generate_page.dart';
+import 'Screens/scan_page.dart';
 import 'Screens/discover_page.dart';
 
 void main() {
@@ -44,7 +47,7 @@ class MyApp extends StatelessWidget {
           case '/agreement':
             return SlideLeftRoute(page: AgreementPage());
           case '/login':
-            return SlideLeftRoute(page: LoginPage()); 
+            return SlideLeftRoute(page: LoginPage());
           case '/phrase':
             return SlideLeftRoute(page: PhrasePage());
           case '/keyphrase':
@@ -68,9 +71,13 @@ class MyApp extends StatelessWidget {
           case '/settings':
             return SlideLeftRoute(page: SettingsPage());
           case '/generatedid':
-          return SlideLeftRoute(page: GeneratedIdPage());
+            return SlideLeftRoute(page: GeneratedIdPage());
           case '/discover':
             return SlideLeftRoute(page: DiscoverPage());
+          case '/qrcode':
+            return SlideLeftRoute(page: QRCodeGeneratePage());
+          case '/scan':
+            return SlideLeftRoute(page: ScanPage());
 
           default:
             return null;

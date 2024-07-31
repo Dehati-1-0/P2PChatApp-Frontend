@@ -22,7 +22,7 @@ class SettingsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 30,
+                height: 10,
               ),
               Container(
                 decoration: BoxDecoration(
@@ -50,18 +50,18 @@ class SettingsPage extends StatelessWidget {
                               Navigator.pushNamed(context, '/phrase');
                             },
                             child: Row(
-                              children: [
-                                Icon(Icons.edit, size: 20),
-                                SizedBox(width: 5),
-                                Text(
-                                  "Change",
-                                  style: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                                // children: [
+                                //   Icon(Icons.edit, size: 20),
+                                //   SizedBox(width: 5),
+                                //   Text(
+                                //     "Change",
+                                //     style: TextStyle(
+                                //       decoration: TextDecoration.underline,
+                                //       fontWeight: FontWeight.w400,
+                                //     ),
+                                //   ),
+                                // ],
                                 ),
-                              ],
-                            ),
                           ),
                         ],
                       ),
@@ -79,11 +79,11 @@ class SettingsPage extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            "Jhon Smith",
+                            "Rhaenyra Targaryen",
                             style: TextStyle(fontSize: 14),
                           ),
                           SizedBox(
-                            width: 100,
+                            width: 80,
                           ),
                           GestureDetector(
                             onTap: () {
@@ -93,13 +93,13 @@ class SettingsPage extends StatelessWidget {
                               children: [
                                 Icon(Icons.edit, size: 20),
                                 SizedBox(width: 5),
-                                Text(
-                                  "Edit",
-                                  style: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
+                                // Text(
+                                //   "Edit",
+                                //   style: TextStyle(
+                                //     decoration: TextDecoration.underline,
+                                //     fontWeight: FontWeight.w400,
+                                //   ),
+                                // ),
                               ],
                             ),
                           ),
@@ -113,20 +113,22 @@ class SettingsPage extends StatelessWidget {
                         height: 20,
                       ),
                       Text(
-                        "ID",
+                        "Public Key",
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(
                         height: 8,
                       ),
-                      Text("PPSSJN123"),
+                      Text(
+                          "'MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgH95JCEmG0wn6TTO6F3TxjrjCyrr/fvQUnBLv0n8qu1Ys6TfKdhjC1f4FWNsviLcgrtY9XWzZ9LjfZQ1DA1M1nEUzrGXcQDsK3YgGeyCKtpLpzz5z0n63oDUChS9UQqRFlpNZecda39Pg5OOqoiLVBKGqzRtVZsPpapYIbzpJ2zFAgMBAAE='"),
                       SizedBox(
                         height: 20,
                       ),
                       Center(
                         child: QrImageView(
-                          data: "PPSSJN123", // Replace with the actual ID
+                          data:
+                              "'MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgH95JCEmG0wn6TTO6F3TxjrjCyrr/fvQUnBLv0n8qu1Ys6TfKdhjC1f4FWNsviLcgrtY9XWzZ9LjfZQ1DA1M1nEUzrGXcQDsK3YgGeyCKtpLpzz5z0n63oDUChS9UQqRFlpNZecda39Pg5OOqoiLVBKGqzRtVZsPpapYIbzpJ2zFAgMBAAE='", // Replace with the actual ID
                           version: QrVersions.auto,
                           size: 150.0,
                         ),

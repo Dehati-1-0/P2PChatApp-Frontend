@@ -28,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward().then((value) {
       // Navigate to the next screen after 2 seconds
-      Future.delayed(Duration(seconds: 2), () {
+      Future.delayed(Duration(seconds: 1), () {
         Navigator.pushReplacementNamed(context, '/welcome');
       });
     });
