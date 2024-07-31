@@ -5,6 +5,7 @@ import 'Screens/description_page.dart';
 import 'Screens/messages_list.dart';
 import 'Screens/saved_contacts.dart';
 import 'Screens/chat_page.dart';
+import 'Screens/user_profile_page.dart';
 import 'Screens/login.dart';
 import 'Screens/phrase.dart';
 import 'Screens/regenerate.dart';
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
           case '/agreement':
             return SlideLeftRoute(page: AgreementPage());
           case '/login':
-            return SlideLeftRoute(page: LoginPage()); 
+            return SlideLeftRoute(page: LoginPage());
           case '/phrase':
             return SlideLeftRoute(page: PhrasePage());
           case '/keyphrase':
@@ -68,9 +69,16 @@ class MyApp extends StatelessWidget {
           case '/settings':
             return SlideLeftRoute(page: SettingsPage());
           case '/generatedid':
-          return SlideLeftRoute(page: GeneratedIdPage());
+            return SlideLeftRoute(page: GeneratedIdPage());
           case '/discover':
             return SlideLeftRoute(page: DiscoverPage());
+          case '/userprofile':
+            final args = settings.arguments as Map<String, dynamic>;
+            return SlideLeftRoute(
+                page: UserProfilePage(
+              userName: args['userName'],
+              userAvatar: args['userAvatar'],
+            ));
 
           default:
             return null;
