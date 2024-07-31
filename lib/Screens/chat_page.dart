@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'user_profile_page.dart'; // Import the user profile page
 
 class ChatPage extends StatelessWidget {
   final String userName;
@@ -11,28 +12,43 @@ class ChatPage extends StatelessWidget {
     this.isOnline = false,
   });
 
+  void _navigateToUserProfile(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => UserProfilePage(
+          userName: userName,
+          userAvatar: userAvatar,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Row(
-          children: [
-            CircleAvatar(
-              backgroundImage: AssetImage(userAvatar),
-            ),
-            SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(userName, style: TextStyle(color: Colors.black)),
-                Text(isOnline ? 'Online' : 'Offline',
-                    style: TextStyle(
-                        color: isOnline ? Colors.green : Colors.red,
-                        fontSize: 12)),
-              ],
-            ),
-          ],
+        title: GestureDetector(
+          onTap: () => _navigateToUserProfile(context),
+          child: Row(
+            children: [
+              CircleAvatar(
+                backgroundImage: AssetImage(userAvatar),
+              ),
+              SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(userName, style: TextStyle(color: Colors.black)),
+                  Text(isOnline ? 'Online' : 'Offline',
+                      style: TextStyle(
+                          color: isOnline ? Colors.green : Colors.red,
+                          fontSize: 12)),
+                ],
+              ),
+            ],
+          ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -45,7 +61,7 @@ class ChatPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          SizedBox(height: 10), // Add SizedBox here
+          SizedBox(height: 10),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(16.0),
@@ -86,9 +102,12 @@ class ChatPage extends StatelessWidget {
           ),
           child: Row(
             children: [
-              CircleAvatar(
-                backgroundImage: AssetImage(avatarPath),
-                radius: 15,
+              GestureDetector(
+                onTap: () => _navigateToUserProfile(context),
+                child: CircleAvatar(
+                  backgroundImage: AssetImage(avatarPath),
+                  radius: 15,
+                ),
               ),
               SizedBox(width: 10),
               Expanded(child: Text(message)),
