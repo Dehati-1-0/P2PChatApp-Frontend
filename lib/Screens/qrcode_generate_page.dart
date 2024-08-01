@@ -124,10 +124,10 @@ class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
               //add the back button
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/username');
                 },
                 child: Text(
-                  'Back',
+                  'Continue',
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 style: ElevatedButton.styleFrom(
