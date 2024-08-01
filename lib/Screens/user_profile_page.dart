@@ -113,20 +113,22 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         height: 20,
                       ),
                       Text(
-                        "ID",
+                        "Public Key",
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(
                         height: 8,
                       ),
-                      Text("PPSSJN123"), // Replace with the actual user ID
+                      Text(
+                          "'MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgH95JCEmG0wn6TTO6F3TxjrjCyrr/fvQUnBLv0n8qu1Ys6TfKdhjC1f4FWNsviLcgrtY9XWzZ9LjfZQ1DA1M1nEUzrGXcQDsK3YgGeyCKtpLpzz5z0n63oDUChS9UQqRFlpNZecda39Pg5OOqoiLVBKGqzRtVZsPpapYIbzpJ2zFAgMBAAE='"), // Replace with the actual user ID
                       SizedBox(
                         height: 20,
                       ),
                       Center(
                         child: QrImageView(
-                          data: "PPSSJN123", // Replace with the actual ID
+                          data:
+                              'MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgH95JCEmG0wn6TTO6F3TxjrjCyrr/fvQUnBLv0n8qu1Ys6TfKdhjC1f4FWNsviLcgrtY9XWzZ9LjfZQ1DA1M1nEUzrGXcQDsK3YgGeyCKtpLpzz5z0n63oDUChS9UQqRFlpNZecda39Pg5OOqoiLVBKGqzRtVZsPpapYIbzpJ2zFAgMBAAE=', // Replace with the actual ID
                           version: QrVersions.auto,
                           size: 150.0,
                         ),

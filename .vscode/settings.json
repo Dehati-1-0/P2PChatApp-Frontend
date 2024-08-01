@@ -4,5 +4,6 @@
     "markdown": "true",
     "scminput": "true",
     "java": "true"
-  }
+  },
+  "cmake.sourceDirectory": "C:/Users/siluni/Desktop/dehati/linux"
 }

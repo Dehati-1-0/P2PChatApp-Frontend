@@ -56,7 +56,7 @@ class KeyPhrasePage extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: "Key Phrase:\n",
+                          text: "Private Key:\n",
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.black,
