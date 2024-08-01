@@ -17,6 +17,7 @@ import 'Screens/generated_phrase_page.dart';
 import 'Screens/welcome_page.dart';
 import 'Screens/settings.dart';
 import 'Screens/generated_id_page.dart';
+import 'Screens/add_new_contact.dart';
 import '../widgets/page_route.dart';
 import 'responsive_utils.dart';
 import 'Screens/empty_chats_page.dart';
@@ -73,6 +74,8 @@ class MyApp extends StatelessWidget {
             return SlideLeftRoute(page: SettingsPage());
           case '/generatedid':
             return SlideLeftRoute(page: GeneratedIdPage());
+          case '/newcontact':
+            return SlideLeftRoute(page: AddNewContactPage());
           case '/discover':
             return SlideLeftRoute(page: DiscoverPage());
           case '/qrcode':
