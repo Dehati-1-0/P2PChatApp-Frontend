@@ -78,12 +78,10 @@ class MyApp extends StatelessWidget {
             return SlideLeftRoute(page: AddNewContactPage());
           case '/discover':
             return SlideLeftRoute(page: DiscoverPage());
-<<<<<<< HEAD
           case '/qrcode':
             return SlideLeftRoute(page: QRCodeGeneratePage());
           case '/scan':
             return SlideLeftRoute(page: ScanPage());
-=======
           case '/userprofile':
             final args = settings.arguments as Map<String, dynamic>;
             return SlideLeftRoute(
@@ -91,7 +89,6 @@ class MyApp extends StatelessWidget {
               userName: args['userName'],
               userAvatar: args['userAvatar'],
             ));
->>>>>>> d6c699d12aabf5b71b99dba4e9270b748742d3b8
 
           default:
             return null;

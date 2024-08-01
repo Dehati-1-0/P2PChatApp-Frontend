@@ -84,7 +84,7 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                         SizedBox(height: 20),
                         TextFormField(
                           decoration: InputDecoration(
-                            labelText: 'ID',
+                            labelText: 'Public key',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide.none,
@@ -97,7 +97,7 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                           keyboardType: TextInputType.phone,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter the id';
+                              return 'Please enter the public key';
                             }
                             // Add more specific phone number validation if needed
                             return null;
