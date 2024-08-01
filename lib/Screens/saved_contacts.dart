@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'chat_page.dart'; // Import the ChatPage
+import 'add_new_contact.dart'; // Import the AddNewContactPage
 
 class SavedContacts extends StatefulWidget {
   @override
@@ -15,6 +16,13 @@ class _SavedContactsState extends State<SavedContacts> {
       _selectedIndex = index;
       _isChatsSelected = index == 2;
     });
+  }
+
+  void _navigateToAddNewContactPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddNewContactPage()),
+    );
   }
 
   @override
@@ -115,6 +123,11 @@ class _SavedContactsState extends State<SavedContacts> {
             ),
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _navigateToAddNewContactPage,
+        backgroundColor: Color(0xFF1A2247),
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }

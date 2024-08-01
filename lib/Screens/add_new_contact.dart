@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'scan_page.dart'; // Make sure to import the ScanPage
 
 class AddNewContactPage extends StatefulWidget {
   @override
@@ -8,7 +9,7 @@ class AddNewContactPage extends StatefulWidget {
 class _AddNewContactPageState extends State<AddNewContactPage> {
   final _formKey = GlobalKey<FormState>();
   late String _name;
-  late String _phoneNumber;
+  late String _publicKey;
 
   void _saveForm() {
     if (_formKey.currentState?.validate() ?? false) {
@@ -19,10 +20,10 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
   }
 
   void _navigateToQRCodePage() {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => QRCodePage()),
-    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ScanPage()),
+    );
   }
 
   @override
@@ -84,7 +85,7 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                         SizedBox(height: 20),
                         TextFormField(
                           decoration: InputDecoration(
-                            labelText: 'ID',
+                            labelText: 'Public key',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide: BorderSide.none,
@@ -94,16 +95,15 @@ class _AddNewContactPageState extends State<AddNewContactPage> {
                             filled: true,
                             fillColor: Colors.white,
                           ),
-                          keyboardType: TextInputType.phone,
+                          keyboardType: TextInputType.text,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter the id';
+                              return 'Please enter the public key';
                             }
-                            // Add more specific phone number validation if needed
                             return null;
                           },
                           onSaved: (value) {
-                            _phoneNumber = value ?? '';
+                            _publicKey = value ?? '';
                           },
                         ),
                         SizedBox(height: 20),
