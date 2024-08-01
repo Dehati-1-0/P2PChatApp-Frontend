@@ -71,7 +71,7 @@ class LoginPage extends StatelessWidget {
             Center(
                 child: InkWell(
               onTap: () {
-                Navigator.pushNamed(context, '/qrcode');
+                Navigator.pushNamed(context, '/scan');
               },
               child: Text(
                 "Scan QR Code",

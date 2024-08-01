@@ -65,7 +65,7 @@ class KeyPhrasePage extends StatelessWidget {
                         ),
                         TextSpan(
                           text:
-                              "A unique phrase for security, allowing you to recover your ID when changing or logging into a new device. This maintains your identity without recovering old contacts.It’s important to keep this phrase safe and secure because you won’t be able to retrieve it later. Remember, this phrase helps you recover your account but doesn’t restore old contacts or information. Store it in a safe place to ensure you can access your account whenever needed.",
+                              "A private key is a unique phrase that serves as your security identifier, allowing you to recover your ID when changing or logging into a new device. This key maintains your identity without recovering old contacts.Remember, this key helps you recover your account but doesn’t restore old contacts or information. Store it in a safe place to ensure you can access your account whenever needed.",
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.black,
@@ -84,7 +84,7 @@ class KeyPhrasePage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/generatedphrase');
+                  Navigator.pushNamed(context, '/qrcode');
                 },
                 child: Text(
                   'Generate',

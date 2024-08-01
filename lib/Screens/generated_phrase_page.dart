@@ -13,6 +13,8 @@ class GeneratedPhrasePage extends StatefulWidget {
   _GeneratedPhrasePage createState() => _GeneratedPhrasePage();
 }
 
+
+
 class _GeneratedPhrasePage extends State<GeneratedPhrasePage> {
   final TextEditingController _controller = TextEditingController(
     text:
@@ -99,10 +101,10 @@ class _GeneratedPhrasePage extends State<GeneratedPhrasePage> {
                     child: Text('Copy Text'),
                   ),
                   SizedBox(height: 20),
-                  // ElevatedButton(
-                  //   onPressed: _downloadQRCode,
-                  //   child: Text('Download QR Code'),
-                  // ),
+                   ElevatedButton(
+                     onPressed: _downloadQRCode,
+                     child: Text('Download QR Code'),
+                   ),
                 ],
               ),
             ),
