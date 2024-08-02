@@ -30,16 +30,29 @@ class _ScanPageState extends State<ScanPage> {
         children: <Widget>[
           Expanded(
             flex: 5,
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: _onQRViewCreated,
-              overlay: QrScannerOverlayShape(
-                borderColor: Colors.red,
-                borderRadius: 10,
-                borderLength: 30,
-                borderWidth: 10,
-                cutOutSize: 300,
-              ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: QRView(
+                    key: qrKey,
+                    onQRViewCreated: _onQRViewCreated,
+                    overlay: QrScannerOverlayShape(
+                      borderColor: Colors.red,
+                      borderRadius: 10,
+                      borderLength: 30,
+                      borderWidth: 10,
+                      cutOutSize: 300,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Align QR code within the frame to scan',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -62,8 +75,7 @@ class _ScanPageState extends State<ScanPage> {
         qrText = scanData.code;
       });
       controller.dispose(); // Stop the camera after getting the result
-      Navigator.pushNamed(
-          context, '/chat'); // Return the result to the previous page
+      Navigator.pushNamed(context, '/chat'); // Navigate to the chat page
     });
   }
 
