@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:async'; // Import the dart:async library
+import '../models/discovered_device.dart'; // Import the model
 import 'empty_chats_page.dart'; // Import the ChatPage
 
 class DiscoverPage extends StatefulWidget {
@@ -9,10 +12,14 @@ class DiscoverPage extends StatefulWidget {
 
 class _DiscoverPageState extends State<DiscoverPage>
     with SingleTickerProviderStateMixin {
-  bool _isChatsSelected = true;
-  int _selectedIndex = 0;
+  static const EventChannel _eventChannel =
+      EventChannel('com.example.p2pchat/discoveredDevices');
+  final List<DiscoveredDevice> _devices = [];
+  late StreamSubscription _subscription;
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
+  bool _isChatsSelected = true;
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -28,10 +35,23 @@ class _DiscoverPageState extends State<DiscoverPage>
 
     _controller
       ..repeat(reverse: true); // Repeat the animation forward and backward
+
+    _subscription = _eventChannel.receiveBroadcastStream().listen(
+      (dynamic event) {
+        setState(() {
+          _devices
+              .add(DiscoveredDevice.fromJson(Map<String, dynamic>.from(event)));
+        });
+      },
+      onError: (dynamic error) {
+        print('Received error: ${error.message}');
+      },
+    );
   }
 
   @override
   void dispose() {
+    _subscription.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -98,128 +118,9 @@ class _DiscoverPageState extends State<DiscoverPage>
               padding: const EdgeInsets.all(40.0),
               child: SingleChildScrollView(
                 child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Column(
-                          children: [
-                            Text("Mexxi"),
-                            Text("Mex714866"),
-                            GestureDetector(
-                              onTap: () {
-                                _navigateToEmptyChatPage(
-                                    context, 'Mexxi', 'assets/user1.png');
-                              },
-                              child: CircleAvatar(
-                                backgroundImage:
-                                    AssetImage('assets/discover icons/cat.png'),
-                                radius: 30,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Column(
-                          children: [
-                            Text("Andrid"),
-                            Text("And7957148"),
-                            GestureDetector(
-                              onTap: () {
-                                _navigateToEmptyChatPage(
-                                  context,
-                                  'Andrid',
-                                  'assets/user2.png',
-                                );
-                              },
-                              child: CircleAvatar(
-                                backgroundImage: AssetImage(
-                                    'assets/discover icons/rabbit.png'),
-                                radius: 30,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 40),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            Text("Europia"),
-                            Text("Euro234589"),
-                            GestureDetector(
-                              onTap: () {
-                                _navigateToEmptyChatPage(
-                                  context,
-                                  'Europia',
-                                  'assets/user3.png',
-                                );
-                              },
-                              child: CircleAvatar(
-                                backgroundImage: AssetImage(
-                                    'assets/discover icons/gorilla.png'),
-                                radius: 30,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Text("Deamon"),
-                            Text("Dea7892215"),
-                            GestureDetector(
-                              onTap: () {
-                                _navigateToEmptyChatPage(
-                                  context,
-                                  'Deamon',
-                                  'assets/user4.png',
-                                );
-                              },
-                              child: CircleAvatar(
-                                backgroundImage: AssetImage(
-                                    'assets/discover icons/panda.png'),
-                                radius: 30,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 50),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Column(
-                          children: [
-                            Text("Raheena"),
-                            Text("Rah4596612"),
-                            GestureDetector(
-                              onTap: () {
-                                _navigateToEmptyChatPage(
-                                  context,
-                                  'Raheena',
-                                  'assets/user5.png',
-                                );
-                              },
-                              child: CircleAvatar(
-                                backgroundImage: AssetImage(
-                                    'assets/discover icons/meerkat.png'),
-                                radius: 30,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                  children: _devices
+                      .map((device) => DeviceWidget(device: device))
+                      .toList(),
                 ),
               ),
             ),
@@ -229,7 +130,7 @@ class _DiscoverPageState extends State<DiscoverPage>
       bottomNavigationBar: BottomAppBar(
         color: Color(0xFF1A2247),
         child: SizedBox(
-          height: 56, // Adjust the height as needed
+          height: 56,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Row(
@@ -269,6 +170,33 @@ class _DiscoverPageState extends State<DiscoverPage>
           ),
         ),
       ),
+    );
+  }
+}
+
+class DeviceWidget extends StatelessWidget {
+  final DiscoveredDevice device;
+
+  const DeviceWidget({Key? key, required this.device}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(device.modelName),
+        Text(device.ip),
+        GestureDetector(
+          onTap: () {
+            // Navigate to the empty chat page
+          },
+          child: CircleAvatar(
+            backgroundImage: AssetImage(
+                'assets/discover icons/cat.png'), // Replace with dynamic images if needed
+            radius: 30,
+          ),
+        ),
+        SizedBox(height: 30),
+      ],
     );
   }
 }
