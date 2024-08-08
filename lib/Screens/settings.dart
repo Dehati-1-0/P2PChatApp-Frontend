@@ -121,14 +121,14 @@ class SettingsPage extends StatelessWidget {
                         height: 8,
                       ),
                       Text(
-                          "'MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgH95JCEmG0wn6TTO6F3TxjrjCyrr/fvQUnBLv0n8qu1Ys6TfKdhjC1f4FWNsviLcgrtY9XWzZ9LjfZQ1DA1M1nEUzrGXcQDsK3YgGeyCKtpLpzz5z0n63oDUChS9UQqRFlpNZecda39Pg5OOqoiLVBKGqzRtVZsPpapYIbzpJ2zFAgMBAAE='"),
+                          "MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgH95JCEmG0wn6TTO6F3TxjrjCyrr/fvQUnBLv0n8qu1Ys6TfKdhjC1f4FWNsviLcgrtY9XWzZ9LjfZQ1DA1M1nEUzrGXcQDsK3YgGeyCKtpLpzz5z0n63oDUChS9UQqRFlpNZecda39Pg5OOqoiLVBKGqzRtVZsPpapYIbzpJ2zFAgMBAAE="),
                       SizedBox(
                         height: 20,
                       ),
                       Center(
                         child: QrImageView(
                           data:
-                              "'MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgH95JCEmG0wn6TTO6F3TxjrjCyrr/fvQUnBLv0n8qu1Ys6TfKdhjC1f4FWNsviLcgrtY9XWzZ9LjfZQ1DA1M1nEUzrGXcQDsK3YgGeyCKtpLpzz5z0n63oDUChS9UQqRFlpNZecda39Pg5OOqoiLVBKGqzRtVZsPpapYIbzpJ2zFAgMBAAE='", // Replace with the actual ID
+                              "MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgH95JCEmG0wn6TTO6F3TxjrjCyrr/fvQUnBLv0n8qu1Ys6TfKdhjC1f4FWNsviLcgrtY9XWzZ9LjfZQ1DA1M1nEUzrGXcQDsK3YgGeyCKtpLpzz5z0n63oDUChS9UQqRFlpNZecda39Pg5OOqoiLVBKGqzRtVZsPpapYIbzpJ2zFAgMBAAE=", // Replace with the actual ID
                           version: QrVersions.auto,
                           size: 150.0,
                         ),

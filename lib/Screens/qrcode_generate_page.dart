@@ -125,7 +125,7 @@ class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
 
               SizedBox(
                 height: 60,
-                width: 300,
+                width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/username');
