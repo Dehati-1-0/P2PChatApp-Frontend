@@ -198,6 +198,10 @@ class DeviceWidget extends StatelessWidget {
                   userAvatar: 'assets/discover icons/cat.png', // Replace with dynamic image if needed
                   isOnline: true, // Set this based on your logic
                 ),
+                // builder: (context) => EmptyChatsPage(
+                //   username: device.modelName,
+                //   avatarPath: 'assets/discover icons/cat.png',
+                // ),
               ),
             );
           },

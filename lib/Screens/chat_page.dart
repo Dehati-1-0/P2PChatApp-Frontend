@@ -34,8 +34,13 @@ class ChatPage extends StatelessWidget {
     String message = _messageController.text;
     if (message.isNotEmpty) {
       // Call your message sender backend method here
-      MessageSender.sendMessage(message, "192.168.1.1", 12345);
-
+      MessageSender.sendMessage(message, "192.168.8.107", 12345).then((result) {
+        if (result['success']) {
+          print("Message sent to ${result['serverIp']}:${result['serverPort']}");
+        } else {
+          print("Failed to send message to ${result['serverIp']}:${result['serverPort']}");
+        }
+      });
       // Clear the input field after sending the message
       _messageController.clear();
     }
