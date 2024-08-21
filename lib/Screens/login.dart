@@ -1,3 +1,4 @@
+import 'package:Dehati/main.dart';
 import 'package:flutter/material.dart';
 import '../widgets/custom_app_bar.dart';
 
@@ -43,6 +44,7 @@ class LoginPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/existinguser');
+                MyApp().startBroadcast(12345);
               },
               child: Text(
                 'Login',

@@ -12,12 +12,28 @@ class QRCodeGeneratePage extends StatefulWidget {
 }
 
 class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
+  static const platform = MethodChannel('com.example.dehati/broadcast');
   final TextEditingController _controller = TextEditingController(
     text:
         'MIICWwIBAAKBgH95JCEmG0wn6TTO6F3TxjrjCyrr/fvQUnBLv0n8qu1Ys6TfKdhjC1f4FWNsviLcgrtY9XWzZ9LjfZQ1DA1M1nEUzrGXcQDsK3YgGeyCKtpLpzz5z0n63oDUChS9UQqRFlpNZecda39Pg5OOqoiLVBKGqzRtVZsPpapYIbzpJ2zFAgMBAAECgYAq/thB2hGRAVE2f6d+pkSRbi1BH/I98kksGVB/Cxs4DRgivyblFpsn48SLEY2cQpZRzLKWLZoSVqrvx2i2P7mAVS2PfNqcfYW8xH1kijy24emGTNBs6N5qlEgH3g4ejnmjmxC1buN3Ww7YOV97S9XQPt9ffzXD9mIwQBtYcx74QJBANYVwFWjxT09s6k7deB5ZiynK9PkfSUeKaTDvTsvowKQAiptmqHwd9ebM++emfncKGyvvfxYjldJ1CLnly62Md0CQQCYbkhyPobmpIply+7tvkXBNj2pcmIWsb5Chu2HXYKPUE83JXNQViXnXO2Lyev3WxKM7XSkCLkM5M+Wws+2gZwJAkEAsS25S2dJ0wBg05uZWBlA3Y3RMQG2LOUEtA8nandnYrSKhlDFnGam2HLjjdnmNyrk7eaYxuMHkuhQQD8JGSjCpQJAOX5HRwf8e9wN821jFjsRNloOEe55vtOVzqPzzX3gs8t3xXYTs3Z633Q2iOZFYUvxiEQ8HW7I1WssPVIHZHAoeQJAAiuhI/xkH857FObZ/g7fka96pJSnA2g9PE0QKE8G+MTPTDgm8dg0sDPiLAqIViEcLJIVKV6PtI/d9y6rQ5uzpw==',
   );
 
   final ScreenshotController _screenshotController = ScreenshotController();
+
+  @override
+  void initState() {
+    super.initState();
+    startBroadcast();
+  }
+
+  Future<void> startBroadcast() async {
+    try {
+      final int port = 12345; // Set the broadcast port
+      await platform.invokeMethod('startBroadcast', {"port": port});
+    } on PlatformException catch (e) {
+      print("Failed to start broadcast: ${e.message}");
+    }
+  }
 
   Future<void> _downloadQRCode() async {
     try {

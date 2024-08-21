@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'Screens/splash_screen.dart';
 import 'Screens/user_name.dart';
 import 'Screens/description_page.dart';
@@ -30,6 +31,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  static const platform = MethodChannel('com.example.dehati/broadcast');
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -86,7 +88,7 @@ class MyApp extends StatelessWidget {
             final args = settings.arguments as Map<String, dynamic>;
             return SlideLeftRoute(
                 page: UserProfilePage(
-              userName: args['userName'], 
+              userName: args['userName'],
               userAvatar: args['userAvatar'],
             ));
 
@@ -95,5 +97,13 @@ class MyApp extends StatelessWidget {
         }
       },
     );
+  }
+
+  Future<void> startBroadcast(int port) async {
+    try {
+      await platform.invokeMethod('startBroadcast', {'port': port});
+    } on PlatformException catch (e) {
+      print("Failed to start broadcast: '${e.message}'.");
+    }
   }
 }

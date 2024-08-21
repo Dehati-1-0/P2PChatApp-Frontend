@@ -38,6 +38,8 @@ class _DiscoverPageState extends State<DiscoverPage>
 
     _subscription = _eventChannel.receiveBroadcastStream().listen(
       (dynamic event) {
+        print(
+            "Event received: $event"); // Debug log to check if events are received
         setState(() {
           _devices
               .add(DiscoveredDevice.fromJson(Map<String, dynamic>.from(event)));
