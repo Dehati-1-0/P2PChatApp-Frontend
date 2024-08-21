@@ -20,7 +20,6 @@ class MainActivity: FlutterActivity() {
 
     private val DISCOVERED_DEVICES_CHANNEL = "com.example.p2pchat/discoveredDevices"
     private val BROADCAST_CHANNEL = "com.example.dehati/broadcast"
-    private lateinit var eventSink: EventChannel.EventSink
     private val SEND_MESSAGE_CHANNEL = "com.example.p2pchat/sendMessage"
     private var eventSink: EventChannel.EventSink? = null
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
