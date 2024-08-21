@@ -123,7 +123,7 @@ class _MessagesListState extends State<MessagesList> {
       _buildMessageItem(
         context,
         'John Smith',
-        'Not too bad. I\'ve been working on...',
+        'Hi I am good Nihara. I\'ve been working on...',
         '1h ago',
         'assets/user1.png',
         true,

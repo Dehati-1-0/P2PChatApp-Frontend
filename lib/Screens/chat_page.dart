@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'user_profile_page.dart'; // Import the user profile page
+import '../services/message_sender.dart'; // Import the MessageSender class
 
 class ChatPage extends StatelessWidget {
+  // Add a TextEditingController to manage the input field text
+  final TextEditingController _messageController = TextEditingController();
+
   final String userName;
   final String userAvatar;
   final bool isOnline;
@@ -12,6 +16,7 @@ class ChatPage extends StatelessWidget {
     this.isOnline = false,
   });
 
+  // Method to navigate to the UserProfilePage
   void _navigateToUserProfile(BuildContext context) {
     Navigator.push(
       context,
@@ -22,6 +27,23 @@ class ChatPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  // Method to send the message and clear the input field
+  void _sendMessage() {
+    String message = _messageController.text;
+    if (message.isNotEmpty) {
+      // Call your message sender backend method here
+      MessageSender.sendMessage(message, "192.168.8.107", 12345).then((result) {
+        if (result['success']) {
+          print("Message sent to ${result['serverIp']}:${result['serverPort']}");
+        } else {
+          print("Failed to send message to ${result['serverIp']}:${result['serverPort']}");
+        }
+      });
+      // Clear the input field after sending the message
+      _messageController.clear();
+    }
   }
 
   @override
@@ -72,7 +94,7 @@ class ChatPage extends StatelessWidget {
                     'Hey ! it\'s been alright, just the usual grind. How about you ?'),
                 _buildReceivedMessage(
                     context,
-                    'Not too bad. I\'ve been working on a few Projects',
+                    'Not too bad Nihara. I\'ve been working on a few Projects',
                     userAvatar),
                 _buildSentMessage(
                     context, 'That sounds interesting. Anything exciting ?'),
@@ -80,19 +102,20 @@ class ChatPage extends StatelessWidget {
               ],
             ),
           ),
-          _buildMessageInput(),
+          _buildMessageInput(), // The input field and send button
         ],
       ),
     );
   }
 
+  // Method to build received message bubbles
   Widget _buildReceivedMessage(
       BuildContext context, String message, String avatarPath) {
     return Align(
       alignment: Alignment.centerLeft,
       child: ConstrainedBox(
         constraints:
-            BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+        BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
         child: Container(
           margin: const EdgeInsets.only(bottom: 20),
           padding: const EdgeInsets.all(10),
@@ -118,12 +141,13 @@ class ChatPage extends StatelessWidget {
     );
   }
 
+  // Method to build sent message bubbles
   Widget _buildSentMessage(BuildContext context, String message) {
     return Align(
       alignment: Alignment.centerRight,
       child: ConstrainedBox(
         constraints:
-            BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+        BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
         child: Container(
           margin: const EdgeInsets.only(bottom: 20),
           padding: const EdgeInsets.all(10),
@@ -140,6 +164,7 @@ class ChatPage extends StatelessWidget {
     );
   }
 
+  // The input field and send button
   Widget _buildMessageInput() {
     return Container(
       padding: const EdgeInsets.all(8.0),
@@ -154,6 +179,7 @@ class ChatPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: TextField(
+                controller: _messageController, // Attach the controller here
                 decoration: InputDecoration(
                   hintText: 'Type a message...',
                   border: InputBorder.none,
@@ -169,9 +195,7 @@ class ChatPage extends StatelessWidget {
             ),
             child: IconButton(
               icon: Icon(Icons.send, color: Colors.white),
-              onPressed: () {
-                // Handle send message action
-              },
+              onPressed: _sendMessage, // Use the _sendMessage method here
             ),
           ),
         ],

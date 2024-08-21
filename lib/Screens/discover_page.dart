@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'dart:async'; // Import the dart:async library
 import '../models/discovered_device.dart'; // Import the model
 import 'empty_chats_page.dart'; // Import the ChatPage
+import 'chat_page.dart';
 
 class DiscoverPage extends StatefulWidget {
   @override
@@ -190,6 +191,21 @@ class DeviceWidget extends StatelessWidget {
         GestureDetector(
           onTap: () {
             // Navigate to the empty chat page
+            // Navigator.pushNamed(context, '/messages');
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatPage(
+                  userName: device.modelName,
+                  userAvatar: 'assets/discover icons/cat.png', // Replace with dynamic image if needed
+                  isOnline: true, // Set this based on your logic
+                ),
+                // builder: (context) => EmptyChatsPage(
+                //   username: device.modelName,
+                //   avatarPath: 'assets/discover icons/cat.png',
+                // ),
+              ),
+            );
           },
           child: CircleAvatar(
             backgroundImage: AssetImage(
