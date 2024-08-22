@@ -4,6 +4,7 @@ import com.example.dehati.util.getLocalIpAddress
 import com.example.dehati.util.getDeviceModelName
 import android.content.Context
 import android.net.wifi.WifiManager
+import android.util.Base64
 import android.util.Log
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -12,7 +13,10 @@ import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.*
 import java.net.DatagramPacket
 import java.net.DatagramSocket
+import java.net.Inet4Address
 import java.net.InetAddress
+import java.security.KeyPair
+import java.security.KeyPairGenerator
 
 data class DiscoveredDevice(val ip: String, val modelName: String)
 
@@ -21,6 +25,7 @@ class MainActivity: FlutterActivity() {
     private val DISCOVERED_DEVICES_CHANNEL = "com.example.p2pchat/discoveredDevices"
     private val BROADCAST_CHANNEL = "com.example.dehati/broadcast"
     private val SEND_MESSAGE_CHANNEL = "com.example.p2pchat/sendMessage"
+    private val KEYS_CHANNEL = "com.example.dehati/keys"
     private var eventSink: EventChannel.EventSink? = null
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -51,8 +56,7 @@ class MainActivity: FlutterActivity() {
                 result.notImplemented()
             }
         }
-        
-        // Setup MethodChannel for sending messages
+
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SEND_MESSAGE_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "sendMessage") {
                 val message = call.argument<String>("message")
@@ -65,6 +69,17 @@ class MainActivity: FlutterActivity() {
                 } else {
                     result.error("INVALID_ARGUMENTS", "Message, IP, or Port missing", null)
                 }
+            } else {
+                result.notImplemented()
+            }
+        }
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, KEYS_CHANNEL).setMethodCallHandler { call, result ->
+            if (call.method == "generateKeyPair") {
+                val keyPair = generateKeyPair()
+                val publicKey = Base64.encodeToString(keyPair.public.encoded, Base64.DEFAULT)
+                val privateKey = Base64.encodeToString(keyPair.private.encoded, Base64.DEFAULT)
+                result.success(mapOf("publicKey" to publicKey, "privateKey" to privateKey))
             } else {
                 result.notImplemented()
             }
@@ -128,11 +143,12 @@ class MainActivity: FlutterActivity() {
         }
     }
 
-
-
-    companion object {
-        const val BROADCAST_INTERVAL = 5000L // 5 seconds
+    private fun generateKeyPair(): KeyPair {
+        val keyGen = KeyPairGenerator.getInstance("RSA")
+        keyGen.initialize(2048)
+        return keyGen.genKeyPair()
     }
+
     private fun sendMessage(message: String, serverIp: String, serverPort: Int, callback: (Boolean) -> Unit) {
         scope.launch {
             try {
@@ -152,5 +168,9 @@ class MainActivity: FlutterActivity() {
                 callback(false)
             }
         }
+    }
+
+    companion object {
+        const val BROADCAST_INTERVAL = 5000L // 5 seconds
     }
 }

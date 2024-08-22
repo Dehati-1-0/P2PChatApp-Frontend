@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:typed_data';
 
 class QRCodeGeneratePage extends StatefulWidget {
@@ -12,26 +13,55 @@ class QRCodeGeneratePage extends StatefulWidget {
 }
 
 class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
-  static const platform = MethodChannel('com.example.dehati/broadcast');
-  final TextEditingController _controller = TextEditingController(
-    text:
-        'MIICWwIBAAKBgH95JCEmG0wn6TTO6F3TxjrjCyrr/fvQUnBLv0n8qu1Ys6TfKdhjC1f4FWNsviLcgrtY9XWzZ9LjfZQ1DA1M1nEUzrGXcQDsK3YgGeyCKtpLpzz5z0n63oDUChS9UQqRFlpNZecda39Pg5OOqoiLVBKGqzRtVZsPpapYIbzpJ2zFAgMBAAECgYAq/thB2hGRAVE2f6d+pkSRbi1BH/I98kksGVB/Cxs4DRgivyblFpsn48SLEY2cQpZRzLKWLZoSVqrvx2i2P7mAVS2PfNqcfYW8xH1kijy24emGTNBs6N5qlEgH3g4ejnmjmxC1buN3Ww7YOV97S9XQPt9ffzXD9mIwQBtYcx74QJBANYVwFWjxT09s6k7deB5ZiynK9PkfSUeKaTDvTsvowKQAiptmqHwd9ebM++emfncKGyvvfxYjldJ1CLnly62Md0CQQCYbkhyPobmpIply+7tvkXBNj2pcmIWsb5Chu2HXYKPUE83JXNQViXnXO2Lyev3WxKM7XSkCLkM5M+Wws+2gZwJAkEAsS25S2dJ0wBg05uZWBlA3Y3RMQG2LOUEtA8nandnYrSKhlDFnGam2HLjjdnmNyrk7eaYxuMHkuhQQD8JGSjCpQJAOX5HRwf8e9wN821jFjsRNloOEe55vtOVzqPzzX3gs8t3xXYTs3Z633Q2iOZFYUvxiEQ8HW7I1WssPVIHZHAoeQJAAiuhI/xkH857FObZ/g7fka96pJSnA2g9PE0QKE8G+MTPTDgm8dg0sDPiLAqIViEcLJIVKV6PtI/d9y6rQ5uzpw==',
-  );
-
+  static const keyChannel = MethodChannel('com.example.dehati/keys');
   final ScreenshotController _screenshotController = ScreenshotController();
+  String publicKey = '';
+  String privateKey = '';
+  String username = '';
 
   @override
   void initState() {
     super.initState();
-    startBroadcast();
+    fetchKeys();
   }
 
-  Future<void> startBroadcast() async {
+  Future<void> fetchKeys() async {
+    final prefs = await SharedPreferences.getInstance();
+    final storedPublicKey = prefs.getString('publicKey');
+    final storedPrivateKey = prefs.getString('privateKey');
+    final storedUsername = prefs.getString('username');
+    final isQrGenerated = prefs.getBool('isQrGenerated') ?? false;
+
+    if (storedPublicKey != null && storedPrivateKey != null && isQrGenerated) {
+      setState(() {
+        publicKey = storedPublicKey;
+        privateKey = storedPrivateKey;
+        username = storedUsername ?? 'Unknown User';
+      });
+      print('Public Key: $publicKey');
+      print('QR Code generated.');
+    } else {
+      generateKeyPair();
+    }
+  }
+
+  Future<void> generateKeyPair() async {
     try {
-      final int port = 12345; // Set the broadcast port
-      await platform.invokeMethod('startBroadcast', {"port": port});
+      final result = await keyChannel.invokeMethod('generateKeyPair');
+      setState(() {
+        publicKey = result['publicKey'];
+        privateKey = result['privateKey'];
+      });
+
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('publicKey', publicKey);
+      prefs.setString('privateKey', privateKey);
+      prefs.setBool('isQrGenerated', true);
+
+      print('Public Key: $publicKey');
+      print('QR Code generated.');
     } on PlatformException catch (e) {
-      print("Failed to start broadcast: ${e.message}");
+      print("Failed to generate key pair: '${e.message}'.");
     }
   }
 
@@ -89,20 +119,18 @@ class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
                   ),
                   child: Column(
                     children: [
-                      QrImageView(
-                        data:
-                            'MIICWwIBAAKBgH95JCEmG0wn6TTO6F3TxjrjCyrr/fvQUnBLv0n8qu1Ys6TfKdhjC1f4FWNsviLcgrtY9XWzZ9LjfZQ1DA1M1nEUzrGXcQDsK3YgGeyCKtpLpzz5z0n63oDUChS9UQqRFlpNZecda39Pg5OOqoiLVBKGqzRtVZsPpapYIbzpJ2zFAgMBAAECgYAq/thB2hGRAVE2f6d+pkSRbi1BH/I98kksGVB/Cxs4DRgivyblFpsn48SLEY2cQpZRzLKWLZoSVqrvx2i2P7mAVS2PfNqcfYW8xH1kijy24emGTNBs6N5qlEgH3g4ejnmjmxC1buN3Ww7YOV97S9XQPt9ffzXD9mIwQBtYcx74QJBANYVwFWjxT09s6k7deB5ZiynK9PkfSUeKaTDvTsvowKQAiptmqHwd9ebM++emfncKGyvvfxYjldJ1CLnly62Md0CQQCYbkhyPobmpIply+7tvkXBNj2pcmIWsb5Chu2HXYKPUE83JXNQViXnXO2Lyev3WxKM7XSkCLkM5M+Wws+2gZwJAkEAsS25S2dJ0wBg05uZWBlA3Y3RMQG2LOUEtA8nandnYrSKhlDFnGam2HLjjdnmNyrk7eaYxuMHkuhQQD8JGSjCpQJAOX5HRwf8e9wN821jFjsRNloOEe55vtOVzqPzzX3gs8t3xXYTs3Z633Q2iOZFYUvxiEQ8HW7I1WssPVIHZHAoeQJAAiuhI/xkH857FObZ/g7fka96pJSnA2g9PE0QKE8G+MTPTDgm8dg0sDPiLAqIViEcLJIVKV6PtI/d9y6rQ5uzpw==',
-                        size: 200,
-                        version: QrVersions.auto,
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      // Scrollable TextField
+                      publicKey.isNotEmpty
+                          ? QrImageView(
+                              data: publicKey,
+                              size: 200,
+                              version: QrVersions.auto,
+                            )
+                          : CircularProgressIndicator(),
+                      SizedBox(height: 30),
                       Container(
-                        height: 150, // Adjust height as needed
+                        height: 150,
                         child: TextField(
-                          controller: _controller,
+                          controller: TextEditingController(text: privateKey),
                           maxLines: null,
                           readOnly: true,
                           decoration: InputDecoration(
@@ -114,15 +142,14 @@ class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
                       SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
-                          final text = _controller.text;
-                          Clipboard.setData(ClipboardData(text: text));
+                          Clipboard.setData(ClipboardData(text: privateKey));
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Text copied to clipboard!'),
+                              content: Text('Private Key copied to clipboard!'),
                             ),
                           );
                         },
-                        child: Text('Copy Text'),
+                        child: Text('Copy Private Key'),
                       ),
                       SizedBox(height: 20),
                       ElevatedButton(
@@ -133,11 +160,7 @@ class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 20,
-              ),
-
-              //add the back button
+              SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/username');

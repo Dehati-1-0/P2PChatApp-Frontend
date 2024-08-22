@@ -1,10 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class GeneratedIdPage extends StatelessWidget {
-  // final String userId = 'Joh558812'; // Replace with the actual user ID
-  final String userName =
-      'Rhaenyra Targaryen'; // Replace with the actual user name
+class GeneratedIdPage extends StatefulWidget {
+  @override
+  _GeneratedIdPageState createState() => _GeneratedIdPageState();
+}
+
+class _GeneratedIdPageState extends State<GeneratedIdPage> {
+  String userName = '';
+  String publicKey = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userName = prefs.getString('username') ?? 'Unknown User';
+      publicKey = prefs.getString('publicKey') ?? '';
+    });
+    print('Fetched Username: $userName');
+    print('Fetched Public Key: $publicKey');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,15 +62,6 @@ class GeneratedIdPage extends StatelessWidget {
               height: 100,
             ),
             SizedBox(height: 20),
-            // Text(
-            //   'This is your id: $userId',
-            //   textAlign: TextAlign.center,
-            //   style: TextStyle(
-            //     fontSize: 16,
-            //     color: Colors.black,
-            //   ),
-            // ),
-            SizedBox(height: 10),
             Text(
               'This is your username: $userName',
               textAlign: TextAlign.center,
@@ -69,12 +81,13 @@ class GeneratedIdPage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Center(
-              child: QrImageView(
-                data:
-                    'MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgH95JCEmG0wn6TTO6F3TxjrjCyrr/fvQUnBLv0n8qu1Ys6TfKdhjC1f4FWNsviLcgrtY9XWzZ9LjfZQ1DA1M1nEUzrGXcQDsK3YgGeyCKtpLpzz5z0n63oDUChS9UQqRFlpNZecda39Pg5OOqoiLVBKGqzRtVZsPpapYIbzpJ2zFAgMBAAE=',
-                version: QrVersions.auto,
-                size: 200.0,
-              ),
+              child: publicKey.isNotEmpty
+                  ? QrImageView(
+                      data: publicKey,
+                      version: QrVersions.auto,
+                      size: 200.0,
+                    )
+                  : CircularProgressIndicator(),
             ),
             SizedBox(height: 20),
             Spacer(),
@@ -95,13 +108,6 @@ class GeneratedIdPage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 16),
               ),
             ),
-            // Center(
-            //   child: Text(
-            //     'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-            //     textAlign: TextAlign.center,
-            //     style: TextStyle(color: Colors.grey),
-            //   ),
-            // ),
             SizedBox(height: 20),
           ],
         ),

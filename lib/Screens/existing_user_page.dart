@@ -1,10 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class WelcomeBackPage extends StatelessWidget {
-  // final String userId = 'Joh558812'; // Replace with the actual user ID
-  final String userName =
-      'Rhaenyra Targaryen'; // Replace with the actual user name
+class WelcomeBackPage extends StatefulWidget {
+  @override
+  _WelcomeBackPageState createState() => _WelcomeBackPageState();
+}
+
+class _WelcomeBackPageState extends State<WelcomeBackPage> {
+  static const keyChannel = MethodChannel('com.example.dehati/keys');
+  String publicKey = '';
+  String privateKey = '';
+  String username = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchKeys();
+  }
+
+  Future<void> fetchKeys() async {
+    final prefs = await SharedPreferences.getInstance();
+    final storedPublicKey = prefs.getString('publicKey');
+    final storedPrivateKey = prefs.getString('privateKey');
+    final storedUsername = prefs.getString('username');
+    final isQrGenerated = prefs.getBool('isQrGenerated') ?? false;
+
+    if (storedPublicKey != null && storedPrivateKey != null && isQrGenerated) {
+      setState(() {
+        publicKey = storedPublicKey;
+        privateKey = storedPrivateKey;
+        username = storedUsername ?? 'Unknown User';
+      });
+      print('Existing Public Key: $publicKey');
+      print('Existing Private Key: $privateKey');
+      print('Existing Username: $username');
+    } else {
+      generateKeyPair();
+    }
+  }
+
+  Future<void> generateKeyPair() async {
+    try {
+      final result = await keyChannel.invokeMethod('generateKeyPair');
+      setState(() {
+        publicKey = result['publicKey'];
+        privateKey = result['privateKey'];
+      });
+
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('publicKey', publicKey);
+      prefs.setString('privateKey', privateKey);
+      prefs.setBool('isQrGenerated', true);
+
+      print('Generated Public Key: $publicKey');
+      print('Generated Private Key: $privateKey');
+    } on PlatformException catch (e) {
+      print("Failed to generate key pair: '${e.message}'.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,18 +95,9 @@ class WelcomeBackPage extends StatelessWidget {
               'assets/logo.png',
               height: 100,
             ),
-            // SizedBox(height: 20),
-            // Text(
-            //   'This is your id: $userId',
-            //   textAlign: TextAlign.center,
-            //   style: TextStyle(
-            //     fontSize: 16,
-            //     color: Colors.black,
-            //   ),
-            // ),
             SizedBox(height: 10),
             Text(
-              'This is your username: $userName',
+              'This is your username: $username',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
@@ -69,12 +115,35 @@ class WelcomeBackPage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Center(
-              child: QrImageView(
-                data:
-                    'MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgH95JCEmG0wn6TTO6F3TxjrjCyrr/fvQUnBLv0n8qu1Ys6TfKdhjC1f4FWNsviLcgrtY9XWzZ9LjfZQ1DA1M1nEUzrGXcQDsK3YgGeyCKtpLpzz5z0n63oDUChS9UQqRFlpNZecda39Pg5OOqoiLVBKGqzRtVZsPpapYIbzpJ2zFAgMBAAE=',
-                version: QrVersions.auto,
-                size: 200.0,
+              child: publicKey.isNotEmpty
+                  ? QrImageView(
+                      data: publicKey,
+                      version: QrVersions.auto,
+                      size: 200.0,
+                    )
+                  : CircularProgressIndicator(),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Your Private Key',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
               ),
+            ),
+            SizedBox(height: 10),
+            Center(
+              child: privateKey.isNotEmpty
+                  ? SelectableText(
+                      privateKey,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                      ),
+                    )
+                  : CircularProgressIndicator(),
             ),
             SizedBox(height: 20),
             Spacer(),
@@ -95,13 +164,6 @@ class WelcomeBackPage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 16),
               ),
             ),
-            // Center(
-            //   child: Text(
-            //     'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-            //     textAlign: TextAlign.center,
-            //     style: TextStyle(color: Colors.grey),
-            //   ),
-            // ),
             SizedBox(height: 20),
           ],
         ),
