@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'chat_page.dart'; // Import the ChatPage
 import 'add_new_contact.dart'; // Import the AddNewContactPage
+import '../models/discovered_device.dart'; // Import the model
 
 class SavedContacts extends StatefulWidget {
   @override
@@ -8,8 +9,18 @@ class SavedContacts extends StatefulWidget {
 }
 
 class _SavedContactsState extends State<SavedContacts> {
+  final List<DiscoveredDevice> _devices = [];
   bool _isChatsSelected = true;
   int _selectedIndex = 2;
+
+  String getDeviceIp(String deviceName) {
+    for (var device in _devices) {
+      if (device.modelName == deviceName) {
+        return device.ip;
+      }
+    }
+    return '0.0.0.0';
+  }
 
   void _onBottomNavItemTapped(int index) {
     setState(() {
@@ -157,6 +168,7 @@ class _SavedContactsState extends State<SavedContacts> {
       ),
       title: Text(name),
       onTap: () {
+        String deviceIp = getDeviceIp(name);
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -164,6 +176,7 @@ class _SavedContactsState extends State<SavedContacts> {
               userName: name,
               userAvatar: avatarPath,
               isOnline: isOnline,
+              deviceIp: deviceIp,
             ),
           ),
         );

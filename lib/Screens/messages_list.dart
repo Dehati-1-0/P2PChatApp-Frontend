@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'chat_page.dart';
+import '../models/discovered_device.dart'; // Import the model
 
 class MessagesList extends StatefulWidget {
   @override
@@ -9,6 +10,7 @@ class MessagesList extends StatefulWidget {
 class _MessagesListState extends State<MessagesList> {
   bool _isChatsSelected = true;
   int _selectedIndex = 1; // Default to the chats tab
+  final List<DiscoveredDevice> _devices = []; // List to store discovered devices
 
   void _onBottomNavItemTapped(int index) {
     setState(() {
@@ -63,9 +65,7 @@ class _MessagesListState extends State<MessagesList> {
             SizedBox(height: 20),
             Expanded(
               child: ListView(
-                children: _buildChatItems(
-                  context,
-                ),
+                children: _buildChatItems(context),
               ),
             ),
           ],
@@ -192,6 +192,7 @@ class _MessagesListState extends State<MessagesList> {
         ],
       ),
       onTap: () {
+        String deviceIp = getDiscoveredDeviceIp(name); // Get the IP address from the discovered devices list
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -199,10 +200,21 @@ class _MessagesListState extends State<MessagesList> {
               userName: name,
               userAvatar: avatarPath,
               isOnline: isNew,
+              deviceIp: deviceIp, // Pass the discovered device IP here
             ),
           ),
         );
       },
     );
+  }
+
+  String getDiscoveredDeviceIp(String deviceName) {
+    // Retrieve the IP address of the discovered device based on its name
+    for (var device in _devices) {
+      if (device.modelName == deviceName) {
+        return device.ip;
+      }
+    }
+    return '0.0.0.0';
   }
 }

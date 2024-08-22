@@ -9,11 +9,13 @@ class ChatPage extends StatefulWidget {
   final String userName;
   final String userAvatar;
   final bool isOnline;
+  final String deviceIp;
 
   ChatPage({
     required this.userName,
     required this.userAvatar,
     this.isOnline = false,
+    required this.deviceIp,
   });
 
   @override
@@ -42,7 +44,7 @@ class _ChatPageState extends State<ChatPage> {
     String message = _messageController.text;
     if (message.isNotEmpty) {
       // Call your message sender backend method here
-      MessageSender.sendMessage(message, "192.168.8.101", 12345).then((result) {
+      MessageSender.sendMessage(message, widget.deviceIp, 12345).then((result) {
         if (result['success']) {
           setState(() {
             _messages.add({'type': 'sent', 'message': message});

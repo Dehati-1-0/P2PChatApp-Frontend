@@ -199,6 +199,7 @@ class DeviceWidget extends StatelessWidget {
                   userName: device.modelName,
                   userAvatar: 'assets/discover icons/cat.png', // Replace with dynamic image if needed
                   isOnline: true, // Set this based on your logic
+                  deviceIp: device.ip, // Pass the discovered device IP
                 ),
                 // builder: (context) => EmptyChatsPage(
                 //   username: device.modelName,
