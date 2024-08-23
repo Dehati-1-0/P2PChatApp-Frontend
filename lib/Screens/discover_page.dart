@@ -44,6 +44,19 @@ class _DiscoverPageState extends State<DiscoverPage>
         setState(() {
           _devices
               .add(DiscoveredDevice.fromJson(Map<String, dynamic>.from(event)));
+          print("Devices: $_devices");
+
+          // Create a new list with the current device
+          // List<DiscoveredDevice> currentDevices = [
+          //   DiscoveredDevice.fromJson(Map<String, dynamic>.from(event))
+          // ];
+
+          // Update the _devices list with unique devices
+          // _devices
+          //   ..clear()
+          //   ..addAll(currentDevices.toSet().toList());
+          // print("Devices: $_devices"); // Print the devices list here
+
         });
       },
       onError: (dynamic error) {
