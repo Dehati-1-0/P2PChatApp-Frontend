@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 class WelcomeBackPage extends StatefulWidget {
   @override
@@ -9,10 +12,10 @@ class WelcomeBackPage extends StatefulWidget {
 }
 
 class _WelcomeBackPageState extends State<WelcomeBackPage> {
-  static const keyChannel = MethodChannel('com.example.dehati/keys');
   String publicKey = '';
   String privateKey = '';
   String username = '';
+  ScreenshotController screenshotController = ScreenshotController();
 
   @override
   void initState() {
@@ -23,42 +26,35 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
   Future<void> fetchKeys() async {
     final prefs = await SharedPreferences.getInstance();
     final storedPublicKey = prefs.getString('publicKey');
-    final storedPrivateKey = prefs.getString('privateKey');
     final storedUsername = prefs.getString('username');
     final isQrGenerated = prefs.getBool('isQrGenerated') ?? false;
 
-    if (storedPublicKey != null && storedPrivateKey != null && isQrGenerated) {
+    if (storedPublicKey != null && isQrGenerated) {
       setState(() {
         publicKey = storedPublicKey;
-        privateKey = storedPrivateKey;
         username = storedUsername ?? 'Unknown User';
       });
       print('Existing Public Key: $publicKey');
-      print('Existing Private Key: $privateKey');
       print('Existing Username: $username');
     } else {
-      generateKeyPair();
+      // Redirect to login page with a message
+      Navigator.pushNamed(context, '/login', arguments: {'loginFailed': true});
     }
   }
 
-  Future<void> generateKeyPair() async {
-    try {
-      final result = await keyChannel.invokeMethod('generateKeyPair');
-      setState(() {
-        publicKey = result['publicKey'];
-        privateKey = result['privateKey'];
-      });
+  Future<void> downloadQrCode() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final imagePath = '${directory.path}/qr_code.png';
+    screenshotController.captureAndSave(directory.path,
+        fileName: 'qr_code.png');
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('QR Code saved to $imagePath')));
+  }
 
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setString('publicKey', publicKey);
-      prefs.setString('privateKey', privateKey);
-      prefs.setBool('isQrGenerated', true);
-
-      print('Generated Public Key: $publicKey');
-      print('Generated Private Key: $privateKey');
-    } on PlatformException catch (e) {
-      print("Failed to generate key pair: '${e.message}'.");
-    }
+  void copyPublicKeyToClipboard() {
+    Clipboard.setData(ClipboardData(text: publicKey));
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Public Key copied to clipboard')));
   }
 
   @override
@@ -85,15 +81,15 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
               'WELCOME  BACK',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 40,
+                fontSize: 32, // Reduced font size
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF0A174E),
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10), // Reduced spacing
             Image.asset(
               'assets/logo.png',
-              height: 100,
+              height: 80, // Reduced image height
             ),
             SizedBox(height: 10),
             Text(
@@ -104,7 +100,7 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
                 color: Colors.black,
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10), // Reduced spacing
             Text(
               'Your Public Key',
               textAlign: TextAlign.center,
@@ -116,16 +112,19 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
             SizedBox(height: 10),
             Center(
               child: publicKey.isNotEmpty
-                  ? QrImageView(
-                      data: publicKey,
-                      version: QrVersions.auto,
-                      size: 200.0,
+                  ? Screenshot(
+                      controller: screenshotController,
+                      child: QrImageView(
+                        data: publicKey,
+                        version: QrVersions.auto,
+                        size: 150.0, // Reduced QR code size
+                      ),
                     )
                   : CircularProgressIndicator(),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10), // Reduced spacing
             Text(
-              'Your Private Key',
+              'Your Public Key',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
@@ -134,18 +133,56 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
             ),
             SizedBox(height: 10),
             Center(
-              child: privateKey.isNotEmpty
-                  ? SelectableText(
-                      privateKey,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black,
+              child: publicKey.isNotEmpty
+                  ? Expanded(
+                      child: Container(
+                        height: 80, // Reduced container height
+                        child: SingleChildScrollView(
+                          child: SelectableText(
+                            publicKey,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
                       ),
                     )
                   : CircularProgressIndicator(),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10), // Reduced spacing
+            ElevatedButton(
+              onPressed: downloadQrCode,
+              child: Text(
+                'Download QR Code',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF1A2247),
+                padding: EdgeInsets.symmetric(vertical: 12), // Reduced padding
+              ),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: copyPublicKeyToClipboard,
+              child: Text(
+                'Copy Public Key',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF1A2247),
+                padding: EdgeInsets.symmetric(vertical: 12), // Reduced padding
+              ),
+            ),
             Spacer(),
             ElevatedButton(
               onPressed: () {
@@ -161,10 +198,10 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF1A2247),
-                padding: EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: 12), // Reduced padding
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10), // Reduced spacing
           ],
         ),
       ),

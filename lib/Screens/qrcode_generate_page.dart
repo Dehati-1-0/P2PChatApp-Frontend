@@ -22,44 +22,27 @@ class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
   @override
   void initState() {
     super.initState();
-    fetchKeys();
+    regenerateKeys();
   }
 
-  Future<void> fetchKeys() async {
-    final prefs = await SharedPreferences.getInstance();
-    final storedPublicKey = prefs.getString('publicKey');
-    final storedPrivateKey = prefs.getString('privateKey');
-    final storedUsername = prefs.getString('username');
-    final isQrGenerated = prefs.getBool('isQrGenerated') ?? false;
-
-    if (storedPublicKey != null && storedPrivateKey != null && isQrGenerated) {
-      setState(() {
-        publicKey = storedPublicKey;
-        privateKey = storedPrivateKey;
-        username = storedUsername ?? 'Unknown User';
-      });
-      print('Public Key: $publicKey');
-      print('QR Code generated.');
-    } else {
-      generateKeyPair();
-    }
-  }
-
-  Future<void> generateKeyPair() async {
+  Future<void> regenerateKeys() async {
     try {
+      // Generate new key pair
       final result = await keyChannel.invokeMethod('generateKeyPair');
       setState(() {
         publicKey = result['publicKey'];
         privateKey = result['privateKey'];
       });
 
+      // Store the new keys in SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('publicKey', publicKey);
       prefs.setString('privateKey', privateKey);
       prefs.setBool('isQrGenerated', true);
 
-      print('Public Key: $publicKey');
-      print('QR Code generated.');
+      print('New Public Key: $publicKey');
+      print('New Private Key: $privateKey');
+      print('New QR Code generated for private key.');
     } on PlatformException catch (e) {
       print("Failed to generate key pair: '${e.message}'.");
     }
@@ -119,9 +102,9 @@ class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
                   ),
                   child: Column(
                     children: [
-                      publicKey.isNotEmpty
+                      privateKey.isNotEmpty
                           ? QrImageView(
-                              data: publicKey,
+                              data: privateKey,
                               size: 200,
                               version: QrVersions.auto,
                             )

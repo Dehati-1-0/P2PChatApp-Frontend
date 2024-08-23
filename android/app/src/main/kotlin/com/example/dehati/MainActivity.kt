@@ -17,7 +17,10 @@ import java.net.Inet4Address
 import java.net.InetAddress
 import java.security.KeyPair
 import java.security.KeyPairGenerator
-
+import java.security.KeyFactory
+import java.security.PrivateKey
+import java.security.spec.PKCS8EncodedKeySpec
+import java.security.spec.X509EncodedKeySpec
 data class DiscoveredDevice(val ip: String, val modelName: String)
 
 class MainActivity: FlutterActivity() {
@@ -75,13 +78,27 @@ class MainActivity: FlutterActivity() {
         }
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, KEYS_CHANNEL).setMethodCallHandler { call, result ->
-            if (call.method == "generateKeyPair") {
-                val keyPair = generateKeyPair()
-                val publicKey = Base64.encodeToString(keyPair.public.encoded, Base64.DEFAULT)
-                val privateKey = Base64.encodeToString(keyPair.private.encoded, Base64.DEFAULT)
-                result.success(mapOf("publicKey" to publicKey, "privateKey" to privateKey))
-            } else {
-                result.notImplemented()
+            when (call.method) {
+                "generateKeyPair" -> {
+                    val keyPair = generateKeyPair()
+                    val publicKey = Base64.encodeToString(keyPair.public.encoded, Base64.DEFAULT)
+                    val privateKey = Base64.encodeToString(keyPair.private.encoded, Base64.DEFAULT)
+                    result.success(mapOf("publicKey" to publicKey, "privateKey" to privateKey))
+                }
+                "generatePublicKey" -> {
+                    val privateKeyString = call.argument<String>("privateKey")
+                    if (privateKeyString != null) {
+                        try {
+                            val publicKey = generatePublicKeyFromPrivate(privateKeyString)
+                            result.success(publicKey)
+                        } catch (e: Exception) {
+                            result.error("ERROR", "Failed to generate public key", e.message)
+                        }
+                    } else {
+                        result.error("INVALID_ARGUMENT", "Private key is missing", null)
+                    }
+                }
+                else -> result.notImplemented()
             }
         }
     }
@@ -147,6 +164,35 @@ class MainActivity: FlutterActivity() {
         val keyGen = KeyPairGenerator.getInstance("RSA")
         keyGen.initialize(2048)
         return keyGen.genKeyPair()
+    }
+
+    private fun generatePublicKeyFromPrivate(privateKeyString: String): String {
+        return try {
+            // Decode the private key string
+            val keySpec = PKCS8EncodedKeySpec(Base64.decode(privateKeyString, Base64.DEFAULT))
+            val keyFactory = KeyFactory.getInstance("RSA")
+            val privateKey: PrivateKey = keyFactory.generatePrivate(keySpec)
+
+            // Generate a key pair with the same algorithm and size as the private key
+            val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
+            keyPairGenerator.initialize(2048) // This should match the private key size
+            val keyPair = keyPairGenerator.generateKeyPair()
+
+            // Extract the public key from the key pair
+            val publicKey = keyPair.public
+
+            // Convert the public key to a Base64 encoded string
+            val publicKeyString = Base64.encodeToString(publicKey.encoded, Base64.DEFAULT)
+
+            // Print the generated public key
+            Log.d("KeyGeneration", "Generated Public Key: $publicKeyString")
+
+            // Return the Base64 encoded public key
+            publicKeyString
+        } catch (e: Exception) {
+            Log.e("KeyGeneration", "Failed to generate public key: ${e.message}")
+            ""
+        }
     }
 
     private fun sendMessage(message: String, serverIp: String, serverPort: Int, callback: (Boolean) -> Unit) {
