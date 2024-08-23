@@ -1,3 +1,4 @@
+import 'package:Dehati/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,6 +41,7 @@ class _LoginPageState extends State<LoginPage> {
 
         // Navigate to the next screen
         Navigator.pushNamed(context, '/existinguser');
+        MyApp().startBroadcast(12345);
       } else {
         throw Exception("Public key generation failed.");
       }

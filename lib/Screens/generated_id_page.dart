@@ -1,3 +1,4 @@
+import 'package:Dehati/main.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -157,6 +158,7 @@ class _GeneratedIdPageState extends State<GeneratedIdPage> {
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/messages');
+                MyApp().startBroadcast(12345);
               },
               child: Text(
                 'Next',
