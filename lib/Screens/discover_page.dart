@@ -15,12 +15,14 @@ class _DiscoverPageState extends State<DiscoverPage>
     with SingleTickerProviderStateMixin {
   static const EventChannel _eventChannel =
       EventChannel('com.example.p2pchat/discoveredDevices');
+  final Map<String, DiscoveredDevice> _deviceMap = {};
   final List<DiscoveredDevice> _devices = [];
   late StreamSubscription _subscription;
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   bool _isChatsSelected = true;
   int _selectedIndex = 0;
+  late Timer _timer;
 
   @override
   void initState() {
@@ -42,9 +44,9 @@ class _DiscoverPageState extends State<DiscoverPage>
         print(
             "Event received: $event"); // Debug log to check if events are received
         setState(() {
-          _devices
-              .add(DiscoveredDevice.fromJson(Map<String, dynamic>.from(event)));
-          print("Devices: $_devices");
+          // _devices
+          //     .add(DiscoveredDevice.fromJson(Map<String, dynamic>.from(event)));
+          // print("Devices: $_devices");
 
           // Create a new list with the current device
           // List<DiscoveredDevice> currentDevices = [
@@ -57,18 +59,44 @@ class _DiscoverPageState extends State<DiscoverPage>
           //   ..addAll(currentDevices.toSet().toList());
           // print("Devices: $_devices"); // Print the devices list here
 
+          final device = DiscoveredDevice.fromJson(Map<String, dynamic>.from(event));
+          _deviceMap[device.ip] = device;
+          _deviceMap[device.ip]!.lastSeen = DateTime.now();
+          _updateDeviceList();
+
         });
       },
       onError: (dynamic error) {
         print('Received error: ${error.message}');
       },
     );
+
+    // Timer to remove devices that have not been seen for 10 seconds
+    _timer = Timer.periodic(Duration(seconds: 10), (timer) {
+      setState(() {
+        _removeStaleDevices();
+        _updateDeviceList();
+      });
+    });
+  }
+
+  void _removeStaleDevices() {
+    final now = DateTime.now();
+    _deviceMap.removeWhere((ip, device) => now.difference(device.lastSeen).inSeconds > 15);
+  }
+
+  void _updateDeviceList() {
+    _devices
+      ..clear()
+      ..addAll(_deviceMap.values);
+    print("Devices: $_devices");
   }
 
   @override
   void dispose() {
     _subscription.cancel();
     _controller.dispose();
+    _timer.cancel();
     super.dispose();
   }
 
