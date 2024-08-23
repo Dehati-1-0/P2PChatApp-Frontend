@@ -1,20 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'user_profile_page.dart'; // Import the user profile page
-import '../services/message_sender.dart'; // Import the MessageSender class
+import '../services/message_sender.dart';// Import the MessageSender class
+import '../models/message.dart';
 
-class ChatPage extends StatelessWidget {
+class ChatPage extends StatefulWidget {
   // Add a TextEditingController to manage the input field text
   final TextEditingController _messageController = TextEditingController();
 
   final String userName;
   final String userAvatar;
   final bool isOnline;
+  final String deviceIp;
 
   ChatPage({
     required this.userName,
     required this.userAvatar,
     this.isOnline = false,
+    required this.deviceIp,
   });
+
+  @override
+  _ChatPageState createState() => _ChatPageState();
+}
+
+class _ChatPageState extends State<ChatPage> {
+  final TextEditingController _messageController = TextEditingController();
+  static const platform = MethodChannel('com.example.p2pchat/receiveMessage');
+  // final List<Map<String, String>> _messages = [];
+  final List<Message> _messages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    print("initState called");
+    _startServer();
+    _setupMessageListener();
+  }
 
   // Method to navigate to the UserProfilePage
   void _navigateToUserProfile(BuildContext context) {
@@ -22,8 +44,8 @@ class ChatPage extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => UserProfilePage(
-          userName: userName,
-          userAvatar: userAvatar,
+          userName: widget.userName,
+          userAvatar: widget.userAvatar,
         ),
       ),
     );
@@ -34,8 +56,18 @@ class ChatPage extends StatelessWidget {
     String message = _messageController.text;
     if (message.isNotEmpty) {
       // Call your message sender backend method here
-      MessageSender.sendMessage(message, "192.168.8.107", 12345).then((result) {
+      MessageSender.sendMessage(message, widget.deviceIp, 12345).then((result) {
         if (result['success']) {
+          // setState(() {
+          //   _messages.add({'type': 'sent', 'message': message});
+          // });
+          setState(() {
+            _messages.add(Message(
+              sender: 'Me',
+              content: message,
+              timestamp: DateTime.now(),
+            ));
+          });
           print("Message sent to ${result['serverIp']}:${result['serverPort']}");
         } else {
           print("Failed to send message to ${result['serverIp']}:${result['serverPort']}");
@@ -44,6 +76,31 @@ class ChatPage extends StatelessWidget {
       // Clear the input field after sending the message
       _messageController.clear();
     }
+  }
+
+  void _startServer() async {
+    print("Starting server...");
+    try {
+      await platform.invokeMethod('startServer', {'port': 12345});
+      print("Server started successfully.");
+    } on PlatformException catch (e) {
+      print("Failed to start server: '${e.message}'.");
+    }
+  }
+
+  void _setupMessageListener() {
+    platform.setMethodCallHandler((call) async {
+      if (call.method == 'onMessageReceived') {
+        final String message = call.arguments;
+        setState(() {
+          _messages.add(Message(
+            sender: widget.userName,
+            content: message,
+            timestamp: DateTime.now(),
+          ));
+        });
+      }
+    });
   }
 
   @override
@@ -56,16 +113,16 @@ class ChatPage extends StatelessWidget {
           child: Row(
             children: [
               CircleAvatar(
-                backgroundImage: AssetImage(userAvatar),
+                backgroundImage: AssetImage(widget.userAvatar),
               ),
               SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(userName, style: TextStyle(color: Colors.black)),
-                  Text(isOnline ? 'Online' : 'Offline',
+                  Text(widget.userName, style: TextStyle(color: Colors.black)),
+                  Text(widget.isOnline ? 'Online' : 'Offline',
                       style: TextStyle(
-                          color: isOnline ? Colors.green : Colors.red,
+                          color: widget.isOnline ? Colors.green : Colors.red,
                           fontSize: 12)),
                 ],
               ),
@@ -84,22 +141,36 @@ class ChatPage extends StatelessWidget {
       body: Column(
         children: [
           SizedBox(height: 10),
+          // Expanded(
+          //   child: ListView(
+          //     padding: const EdgeInsets.all(16.0),
+          //     children: [
+          //       _buildReceivedMessage(
+          //           context, 'Hi, How\'s work been lately ?', userAvatar),
+          //       _buildSentMessage(context,
+          //           'Hey ! it\'s been alright, just the usual grind. How about you ?'),
+          //       _buildReceivedMessage(
+          //           context,
+          //           'Not too bad Nihara. I\'ve been working on a few Projects',
+          //           userAvatar),
+          //       _buildSentMessage(
+          //           context, 'That sounds interesting. Anything exciting ?'),
+          //       _buildReceivedMessage(context, 'Typing.........', userAvatar),
+          //     ],
+          //   ),
+          // ),
           Expanded(
-            child: ListView(
+            child: ListView.builder(
               padding: const EdgeInsets.all(16.0),
-              children: [
-                _buildReceivedMessage(
-                    context, 'Hi, How\'s work been lately ?', userAvatar),
-                _buildSentMessage(context,
-                    'Hey ! it\'s been alright, just the usual grind. How about you ?'),
-                _buildReceivedMessage(
-                    context,
-                    'Not too bad Nihara. I\'ve been working on a few Projects',
-                    userAvatar),
-                _buildSentMessage(
-                    context, 'That sounds interesting. Anything exciting ?'),
-                _buildReceivedMessage(context, 'Typing.........', userAvatar),
-              ],
+              itemCount: _messages.length,
+              itemBuilder: (context, index) {
+                final message = _messages[index];
+                if (message.sender == 'Me') {
+                  return _buildSentMessage(context, message.content);
+                } else {
+                  return _buildReceivedMessage(context, message.content, widget.userAvatar);
+                }
+              },
             ),
           ),
           _buildMessageInput(), // The input field and send button

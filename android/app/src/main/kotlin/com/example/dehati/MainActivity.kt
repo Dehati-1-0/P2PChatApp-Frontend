@@ -15,6 +15,10 @@ import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.Inet4Address
 import java.net.InetAddress
+import java.net.ServerSocket
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.io.PrintWriter
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.KeyFactory
@@ -28,9 +32,11 @@ class MainActivity: FlutterActivity() {
     private val DISCOVERED_DEVICES_CHANNEL = "com.example.p2pchat/discoveredDevices"
     private val BROADCAST_CHANNEL = "com.example.dehati/broadcast"
     private val SEND_MESSAGE_CHANNEL = "com.example.p2pchat/sendMessage"
+    private val RECEIVE_MESSAGE_CHANNEL = "com.example.p2pchat/receiveMessage"
     private val KEYS_CHANNEL = "com.example.dehati/keys"
     private var eventSink: EventChannel.EventSink? = null
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+//    private val offlineMessages: MutableList<String> = mutableListOf()
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -72,6 +78,21 @@ class MainActivity: FlutterActivity() {
                 } else {
                     result.error("INVALID_ARGUMENTS", "Message, IP, or Port missing", null)
                 }
+            } else {
+                result.notImplemented()
+            }
+        }
+
+        // Setup MethodChannel for receiving messages
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, RECEIVE_MESSAGE_CHANNEL).setMethodCallHandler { call, result ->
+            if (call.method == "startServer") {
+                val port = call.argument<Int>("port") ?: 8000
+                startServer(port) { message ->
+                    runOnUiThread {
+                        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, RECEIVE_MESSAGE_CHANNEL).invokeMethod("onMessageReceived", message)
+                    }
+                }
+                result.success("Server started on port $port")
             } else {
                 result.notImplemented()
             }
@@ -218,5 +239,44 @@ class MainActivity: FlutterActivity() {
 
     companion object {
         const val BROADCAST_INTERVAL = 5000L // 5 seconds
+    }
+    fun startServer(port: Int, onMessageReceived: (String) -> Unit) {
+        Thread {
+            try {
+                val serverSocket = ServerSocket(port)
+                Log.d("P2PChatApp", "Server started on port $port")
+                while (true) {
+                    val clientSocket = serverSocket.accept()
+                    val clientIp = clientSocket.inetAddress.hostAddress
+                    Log.d("P2PChatApp", "Client connected: $clientIp")
+                    val reader = BufferedReader(InputStreamReader(clientSocket.getInputStream()))
+                    val message = reader.readLine()
+                    if (message != null) {
+                        Log.d("P2PChatApp", "Message received: $message")
+                        runOnUiThread {
+                            onMessageReceived(message)
+                        }
+                        val writer = PrintWriter(clientSocket.getOutputStream(), true)
+                        writer.println("ACK")
+                        writer.flush()
+                    }
+                    clientSocket.close()
+
+                    // Deliver stored messages in order of their timestamp
+//                    offlineMessages[clientIp]?.let { messages ->
+//                        messages.sortedBy { it.timestamp }.forEach { offlineMessage ->
+//                            sendMessage(offlineMessage.content, clientIp, port) { success ->
+//                                if (success) {
+//                                    messages.remove(offlineMessage)
+//                                }
+//                            }
+//                        }
+//                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.e("P2PChatApp", "Error starting server: ${e.message}")
+            }
+        }.start()
     }
 }
