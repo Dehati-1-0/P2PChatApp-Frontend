@@ -26,15 +26,19 @@ import 'Screens/qrcode_generate_page.dart';
 import 'Screens/scan_page.dart';
 import 'Screens/discover_page.dart';
 
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   static const platform = MethodChannel('com.example.dehati/broadcast');
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorObservers: [routeObserver],
       debugShowCheckedModeBanner: false,
       // title: 'Dehati UI',
       theme: ThemeData(

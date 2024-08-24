@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../utils/custom_name_storage.dart';
+
 
 class UserProfilePage extends StatefulWidget {
   final String userName;
@@ -14,11 +17,24 @@ class UserProfilePage extends StatefulWidget {
 class _UserProfilePageState extends State<UserProfilePage> {
   late String _currentUserName;
   bool _isEditing = false;
+  final Map<String, String> _customNames = {};
 
   @override
   void initState() {
     super.initState();
     _currentUserName = widget.userName;
+    _loadCustomNames();
+  }
+
+  Future<void> _loadCustomNames() async {
+    final customNames = await CustomNameStorage.loadCustomNames();
+    setState(() {
+      _customNames.addAll(customNames);
+    });
+  }
+
+  Future<void> _saveCustomNames() async {
+    await CustomNameStorage.saveCustomNames(_customNames);
   }
 
   @override
@@ -84,8 +100,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                   ),
                                 )
                               : Text(
-                                  _currentUserName,
-                                  style: TextStyle(
+                            _customNames[widget.userName] ?? _currentUserName,
+                            style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w600),
                                 ),
@@ -144,7 +160,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               if (_currentUserName.isNotEmpty) {
                                 // Save the new username
                                 setState(() {
+                                  _customNames[widget.userName] = _currentUserName;
                                   _isEditing = false;
+                                  _saveCustomNames();
                                 });
                               }
                             },
