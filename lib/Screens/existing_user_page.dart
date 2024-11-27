@@ -1,10 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
-class WelcomeBackPage extends StatelessWidget {
-  // final String userId = 'Joh558812'; // Replace with the actual user ID
-  final String userName =
-      'Rhaenyra Targaryen'; // Replace with the actual user name
+class WelcomeBackPage extends StatefulWidget {
+  @override
+  _WelcomeBackPageState createState() => _WelcomeBackPageState();
+}
+
+class _WelcomeBackPageState extends State<WelcomeBackPage> {
+  String publicKey = '';
+  String privateKey = '';
+  String username = '';
+  ScreenshotController screenshotController = ScreenshotController();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchKeys();
+  }
+
+  Future<void> fetchKeys() async {
+    final prefs = await SharedPreferences.getInstance();
+    final storedPublicKey = prefs.getString('publicKey');
+    final storedUsername = prefs.getString('username');
+    final isQrGenerated = prefs.getBool('isQrGenerated') ?? false;
+
+    if (storedPublicKey != null && isQrGenerated) {
+      setState(() {
+        publicKey = storedPublicKey;
+        username = storedUsername ?? 'Unknown User';
+      });
+      print('Existing Public Key: $publicKey');
+      print('Existing Username: $username');
+    } else {
+      // Redirect to login page with a message
+      Navigator.pushNamed(context, '/login', arguments: {'loginFailed': true});
+    }
+  }
+
+  Future<void> downloadQrCode() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final imagePath = '${directory.path}/qr_code.png';
+    screenshotController.captureAndSave(directory.path,
+        fileName: 'qr_code.png');
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('QR Code saved to $imagePath')));
+  }
+
+  void copyPublicKeyToClipboard() {
+    Clipboard.setData(ClipboardData(text: publicKey));
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Public Key copied to clipboard')));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,35 +81,26 @@ class WelcomeBackPage extends StatelessWidget {
               'WELCOME  BACK',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 40,
+                fontSize: 32, // Reduced font size
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF0A174E),
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10), // Reduced spacing
             Image.asset(
               'assets/logo.png',
-              height: 100,
+              height: 80, // Reduced image height
             ),
-            // SizedBox(height: 20),
-            // Text(
-            //   'This is your id: $userId',
-            //   textAlign: TextAlign.center,
-            //   style: TextStyle(
-            //     fontSize: 16,
-            //     color: Colors.black,
-            //   ),
-            // ),
             SizedBox(height: 10),
             Text(
-              'This is your username: $userName',
+              'This is your username: $username',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.black,
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10), // Reduced spacing
             Text(
               'Your Public Key',
               textAlign: TextAlign.center,
@@ -69,14 +111,78 @@ class WelcomeBackPage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Center(
-              child: QrImageView(
-                data:
-                    'MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgH95JCEmG0wn6TTO6F3TxjrjCyrr/fvQUnBLv0n8qu1Ys6TfKdhjC1f4FWNsviLcgrtY9XWzZ9LjfZQ1DA1M1nEUzrGXcQDsK3YgGeyCKtpLpzz5z0n63oDUChS9UQqRFlpNZecda39Pg5OOqoiLVBKGqzRtVZsPpapYIbzpJ2zFAgMBAAE=',
-                version: QrVersions.auto,
-                size: 200.0,
+              child: publicKey.isNotEmpty
+                  ? Screenshot(
+                      controller: screenshotController,
+                      child: QrImageView(
+                        data: publicKey,
+                        version: QrVersions.auto,
+                        size: 150.0, // Reduced QR code size
+                      ),
+                    )
+                  : CircularProgressIndicator(),
+            ),
+            SizedBox(height: 10), // Reduced spacing
+            Text(
+              'Your Public Key',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
+            Center(
+              child: publicKey.isNotEmpty
+                  ? Expanded(
+                      child: Container(
+                        height: 80, // Reduced container height
+                        child: SingleChildScrollView(
+                          child: SelectableText(
+                            publicKey,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : CircularProgressIndicator(),
+            ),
+            SizedBox(height: 10), // Reduced spacing
+            ElevatedButton(
+              onPressed: downloadQrCode,
+              child: Text(
+                'Download QR Code',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF1A2247),
+                padding: EdgeInsets.symmetric(vertical: 12), // Reduced padding
+              ),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: copyPublicKeyToClipboard,
+              child: Text(
+                'Copy Public Key',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF1A2247),
+                padding: EdgeInsets.symmetric(vertical: 12), // Reduced padding
+              ),
+            ),
             Spacer(),
             ElevatedButton(
               onPressed: () {
@@ -92,17 +198,10 @@ class WelcomeBackPage extends StatelessWidget {
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF1A2247),
-                padding: EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: 12), // Reduced padding
               ),
             ),
-            // Center(
-            //   child: Text(
-            //     'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-            //     textAlign: TextAlign.center,
-            //     style: TextStyle(color: Colors.grey),
-            //   ),
-            // ),
-            SizedBox(height: 20),
+            SizedBox(height: 10), // Reduced spacing
           ],
         ),
       ),

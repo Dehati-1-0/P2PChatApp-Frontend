@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/custom_app_bar.dart';
 
 class UserName extends StatelessWidget {
+  final TextEditingController _usernameController = TextEditingController();
+
+  Future<void> _saveUsername(String username) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', username);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +37,7 @@ class UserName extends StatelessWidget {
               ),
               SizedBox(height: 30),
               TextField(
+                controller: _usernameController,
                 decoration: InputDecoration(
                   hintText: 'User Name',
                   border: OutlineInputBorder(),
@@ -38,7 +47,8 @@ class UserName extends StatelessWidget {
               ),
               SizedBox(height: 30),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  await _saveUsername(_usernameController.text);
                   Navigator.pushNamed(context, '/generatedid');
                 },
                 child: Text(

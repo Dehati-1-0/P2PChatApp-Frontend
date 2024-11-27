@@ -34,13 +34,13 @@ void main() {
 
 class MyApp extends StatelessWidget {
   static const platform = MethodChannel('com.example.dehati/broadcast');
+  static const keyChannel = MethodChannel('com.example.dehati/keys');
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorObservers: [routeObserver],
       debugShowCheckedModeBanner: false,
-      // title: 'Dehati UI',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'Lato',
@@ -95,7 +95,6 @@ class MyApp extends StatelessWidget {
               userName: args['userName'],
               userAvatar: args['userAvatar'],
             ));
-
           default:
             return null;
         }
@@ -108,6 +107,18 @@ class MyApp extends StatelessWidget {
       await platform.invokeMethod('startBroadcast', {'port': port});
     } on PlatformException catch (e) {
       print("Failed to start broadcast: '${e.message}'.");
+    }
+  }
+
+  Future<void> generateKeyPair() async {
+    try {
+      final result = await keyChannel.invokeMethod('generateKeyPair');
+      final publicKey = result['publicKey'];
+      final privateKey = result['privateKey'];
+      print('Public Key: $publicKey');
+      print('Private Key: $privateKey');
+    } on PlatformException catch (e) {
+      print("Failed to generate key pair: '${e.message}'.");
     }
   }
 }
