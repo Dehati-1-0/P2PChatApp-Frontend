@@ -25,6 +25,7 @@ import java.security.KeyFactory
 import java.security.PrivateKey
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
+
 data class DiscoveredDevice(val ip: String, val modelName: String)
 
 class MainActivity: FlutterActivity() {
@@ -36,7 +37,6 @@ class MainActivity: FlutterActivity() {
     private val KEYS_CHANNEL = "com.example.dehati/keys"
     private var eventSink: EventChannel.EventSink? = null
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-//    private val offlineMessages: MutableList<String> = mutableListOf()
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -51,7 +51,6 @@ class MainActivity: FlutterActivity() {
 
                 override fun onCancel(arguments: Any?) {
                     eventSink = null
-                    scope.cancel()
                 }
             }
         )
@@ -73,23 +72,26 @@ class MainActivity: FlutterActivity() {
                 val serverPort = call.argument<Int>("serverPort")
                 if (message != null && serverIp != null && serverPort != null) {
                     sendMessage(message, serverIp, serverPort) { success ->
-                        result.success(success)
+                        if (success) {
+                            result.success("Message sent successfully")
+                        } else {
+                            result.error("ERROR", "Failed to send message", null)
+                        }
                     }
                 } else {
-                    result.error("INVALID_ARGUMENTS", "Message, IP, or Port missing", null)
+                    result.error("ERROR", "Invalid arguments", null)
                 }
             } else {
                 result.notImplemented()
             }
         }
 
-        // Setup MethodChannel for receiving messages
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, RECEIVE_MESSAGE_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "startServer") {
                 val port = call.argument<Int>("port") ?: 8000
                 startServer(port) { message ->
                     runOnUiThread {
-                        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, RECEIVE_MESSAGE_CHANNEL).invokeMethod("onMessageReceived", message)
+                        eventSink?.success(message)
                     }
                 }
                 result.success("Server started on port $port")
@@ -116,7 +118,7 @@ class MainActivity: FlutterActivity() {
                             result.error("ERROR", "Failed to generate public key", e.message)
                         }
                     } else {
-                        result.error("INVALID_ARGUMENT", "Private key is missing", null)
+                        result.error("ERROR", "Invalid arguments", null)
                     }
                 }
                 else -> result.notImplemented()
@@ -140,15 +142,14 @@ class MainActivity: FlutterActivity() {
                     val packet = DatagramPacket(buffer, buffer.size)
                     socket.receive(packet)
                     val message = String(packet.data, 0, packet.length)
-                    if (message.startsWith("DISCOVER:") && !message.contains(localIpAddress)) {
+                    if (message.startsWith("DISCOVER:") && !message.contains(localIpAddress as CharSequence, ignoreCase = true)) {
                         val parts = message.split(":")
                         if (parts.size >= 3) {
                             val ip = parts[1]
                             val modelName = parts[2]
                             val device = DiscoveredDevice(ip, modelName)
-                            Log.d("P2PChatApp", "Discovered device: $device")
                             withContext(Dispatchers.Main) {
-                                eventSink?.success(mapOf("ip" to ip, "modelName" to modelName))
+                                eventSink?.success(mapOf("ip" to device.ip, "modelName" to device.modelName))
                             }
                         }
                     }
@@ -160,7 +161,7 @@ class MainActivity: FlutterActivity() {
     }
 
     private fun broadcastIp(port: Int) {
-        CoroutineScope(Dispatchers.IO).launch {
+        scope.launch {
             try {
                 val broadcastAddress = InetAddress.getByName("255.255.255.255")
                 val socket = DatagramSocket()
@@ -171,8 +172,7 @@ class MainActivity: FlutterActivity() {
                 Log.d("P2PChatApp", "Broadcasting IP: $localIpAddress")
                 while (true) {
                     socket.send(packet)
-                    Log.d("P2PChatApp", "Packet sent: $message")
-                    Thread.sleep(BROADCAST_INTERVAL)
+                    kotlinx.coroutines.delay(5000L)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -189,27 +189,16 @@ class MainActivity: FlutterActivity() {
 
     private fun generatePublicKeyFromPrivate(privateKeyString: String): String {
         return try {
-            // Decode the private key string
             val keySpec = PKCS8EncodedKeySpec(Base64.decode(privateKeyString, Base64.DEFAULT))
             val keyFactory = KeyFactory.getInstance("RSA")
             val privateKey: PrivateKey = keyFactory.generatePrivate(keySpec)
 
-            // Generate a key pair with the same algorithm and size as the private key
             val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
-            keyPairGenerator.initialize(2048) // This should match the private key size
+            keyPairGenerator.initialize(2048)
             val keyPair = keyPairGenerator.generateKeyPair()
 
-            // Extract the public key from the key pair
             val publicKey = keyPair.public
-
-            // Convert the public key to a Base64 encoded string
-            val publicKeyString = Base64.encodeToString(publicKey.encoded, Base64.DEFAULT)
-
-            // Print the generated public key
-            Log.d("KeyGeneration", "Generated Public Key: $publicKeyString")
-
-            // Return the Base64 encoded public key
-            publicKeyString
+            Base64.encodeToString(publicKey.encoded, Base64.DEFAULT)
         } catch (e: Exception) {
             Log.e("KeyGeneration", "Failed to generate public key: ${e.message}")
             ""
@@ -220,8 +209,8 @@ class MainActivity: FlutterActivity() {
         scope.launch {
             try {
                 java.net.Socket(serverIp, serverPort).use { socket ->
-                    val writer = java.io.PrintWriter(socket.getOutputStream(), true)
-                    val reader = java.io.BufferedReader(java.io.InputStreamReader(socket.getInputStream()))
+                    val writer = PrintWriter(socket.getOutputStream(), true)
+                    val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
 
                     writer.println(message)
                     writer.flush()
@@ -237,9 +226,6 @@ class MainActivity: FlutterActivity() {
         }
     }
 
-    companion object {
-        const val BROADCAST_INTERVAL = 5000L // 5 seconds
-    }
     fun startServer(port: Int, onMessageReceived: (String) -> Unit) {
         Thread {
             try {
@@ -261,17 +247,6 @@ class MainActivity: FlutterActivity() {
                         writer.flush()
                     }
                     clientSocket.close()
-
-                    // Deliver stored messages in order of their timestamp
-//                    offlineMessages[clientIp]?.let { messages ->
-//                        messages.sortedBy { it.timestamp }.forEach { offlineMessage ->
-//                            sendMessage(offlineMessage.content, clientIp, port) { success ->
-//                                if (success) {
-//                                    messages.remove(offlineMessage)
-//                                }
-//                            }
-//                        }
-//                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
