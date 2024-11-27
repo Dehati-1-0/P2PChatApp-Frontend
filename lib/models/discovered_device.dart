@@ -2,8 +2,9 @@ class DiscoveredDevice {
   final String modelName;
   final String ip;
   late DateTime lastSeen;
+  String customName;
 
-  DiscoveredDevice({required this.modelName, required this.ip}) {
+  DiscoveredDevice({required this.modelName, required this.ip, this.customName = ''}) {
     lastSeen = DateTime.now();
   }
 

@@ -4,6 +4,8 @@ import 'dart:async'; // Import the dart:async library
 import '../models/discovered_device.dart'; // Import the model
 import 'empty_chats_page.dart'; // Import the ChatPage
 import 'chat_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../utils/custom_name_storage.dart';
 
 class DiscoverPage extends StatefulWidget {
   @override
@@ -17,6 +19,7 @@ class _DiscoverPageState extends State<DiscoverPage>
       EventChannel('com.example.p2pchat/discoveredDevices');
   final Map<String, DiscoveredDevice> _deviceMap = {};
   final List<DiscoveredDevice> _devices = [];
+  final Map<String, String> _customNames = {};
   late StreamSubscription _subscription;
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
@@ -27,6 +30,7 @@ class _DiscoverPageState extends State<DiscoverPage>
   @override
   void initState() {
     super.initState();
+    _loadCustomNames();
     _controller = AnimationController(
       duration: Duration(seconds: 2),
       vsync: this,
@@ -62,6 +66,11 @@ class _DiscoverPageState extends State<DiscoverPage>
           final device = DiscoveredDevice.fromJson(Map<String, dynamic>.from(event));
           _deviceMap[device.ip] = device;
           _deviceMap[device.ip]!.lastSeen = DateTime.now();
+
+          if (_customNames.containsKey(device.ip)) {
+            _deviceMap[device.ip]!.customName = _customNames[device.ip]!;
+          }
+
           _updateDeviceList();
 
         });
@@ -80,6 +89,14 @@ class _DiscoverPageState extends State<DiscoverPage>
     });
   }
 
+  Future<void> _loadCustomNames() async {
+    final customNames = await CustomNameStorage.loadCustomNames();
+    setState(() {
+      _customNames.addAll(customNames);
+      _updateDeviceList();
+    });
+  }
+
   void _removeStaleDevices() {
     final now = DateTime.now();
     _deviceMap.removeWhere((ip, device) => now.difference(device.lastSeen).inSeconds > 15);
@@ -89,6 +106,11 @@ class _DiscoverPageState extends State<DiscoverPage>
     _devices
       ..clear()
       ..addAll(_deviceMap.values);
+    for (var device in _devices) {
+      if (_customNames.containsKey(device.ip)) {
+        device.customName = _customNames[device.ip]!;
+      }
+    }
     print("Devices: $_devices");
   }
 
@@ -227,7 +249,7 @@ class DeviceWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(device.modelName),
+        Text(device.customName.isNotEmpty ? device.customName : device.modelName),
         Text(device.ip),
         GestureDetector(
           onTap: () {
@@ -237,7 +259,8 @@ class DeviceWidget extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => ChatPage(
-                  userName: device.modelName,
+                  userName: device.customName.isNotEmpty ? device.customName : device.modelName,
+                  // print('Navigating to ChatPage with userName: ${device.customName.isNotEmpty ? device.customName : device.modelName}'),
                   userAvatar: 'assets/discover icons/cat.png', // Replace with dynamic image if needed
                   isOnline: true, // Set this based on your logic
                   deviceIp: device.ip, // Pass the discovered device IP

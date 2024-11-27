@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'user_profile_page.dart'; // Import the user profile page
 import '../services/message_sender.dart';// Import the MessageSender class
 import '../models/message.dart';
+import '../utils/custom_name_storage.dart';
+import '../main.dart';
 
 class ChatPage extends StatefulWidget {
   // Add a TextEditingController to manage the input field text
@@ -16,7 +19,8 @@ class ChatPage extends StatefulWidget {
   ChatPage({
     required this.userName,
     required this.userAvatar,
-    this.isOnline = false,
+    // this.isOnline = false,
+    required this.isOnline,
     required this.deviceIp,
   });
 
@@ -24,18 +28,62 @@ class ChatPage extends StatefulWidget {
   _ChatPageState createState() => _ChatPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _ChatPageState extends State<ChatPage> with RouteAware {
+
   final TextEditingController _messageController = TextEditingController();
   static const platform = MethodChannel('com.example.p2pchat/receiveMessage');
   // final List<Map<String, String>> _messages = [];
   final List<Message> _messages = [];
+  late String _currentUserName;
+  final Map<String, String> _customNames = {};
 
   @override
   void initState() {
     super.initState();
+    _currentUserName = widget.userName;
+    _loadCustomNames();
     print("initState called");
     _startServer();
     _setupMessageListener();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    // Called when the current route has been popped off, and the current route shows up
+    super.didPopNext();
+    setState(() {
+      _loadCustomNames();
+    });
+  }
+
+  Future<void> _loadCustomNames() async {
+    final customNames = await CustomNameStorage.loadCustomNames();
+    setState(() {
+      _customNames.addAll(customNames);
+      if (_customNames.containsKey(widget.deviceIp)) {
+        _currentUserName = _customNames[widget.deviceIp]!;
+      }
+    });
+  }
+
+  Future<void> _saveCustomNames() async {
+    _customNames[widget.deviceIp] = _currentUserName;
+    await CustomNameStorage.saveCustomNames(_customNames);
   }
 
   // Method to navigate to the UserProfilePage
@@ -44,7 +92,7 @@ class _ChatPageState extends State<ChatPage> {
       context,
       MaterialPageRoute(
         builder: (context) => UserProfilePage(
-          userName: widget.userName,
+          userName:_currentUserName,
           userAvatar: widget.userAvatar,
         ),
       ),
@@ -119,7 +167,7 @@ class _ChatPageState extends State<ChatPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.userName, style: TextStyle(color: Colors.black)),
+                  Text(_currentUserName, style: TextStyle(color: Colors.black)),
                   Text(widget.isOnline ? 'Online' : 'Offline',
                       style: TextStyle(
                           color: widget.isOnline ? Colors.green : Colors.red,
