@@ -35,6 +35,9 @@ class _LoginPageState extends State<LoginPage> {
         await prefs.setString('privateKey', privateKey);
         await prefs.setString('publicKey', publicKey);
 
+        // Set the logged-in status to true
+        await prefs.setBool('isLoggedIn', true);
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Login successful!')),
         );

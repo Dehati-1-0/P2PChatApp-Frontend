@@ -13,6 +13,7 @@ class DiscoverPage extends StatefulWidget {
 
 class _DiscoverPageState extends State<DiscoverPage>
     with SingleTickerProviderStateMixin {
+  static const platform = MethodChannel('com.example.dehati/broadcast');
   static const EventChannel _eventChannel =
       EventChannel('com.example.p2pchat/discoveredDevices');
   final Map<String, DiscoveredDevice> _deviceMap = {};
@@ -27,6 +28,8 @@ class _DiscoverPageState extends State<DiscoverPage>
   @override
   void initState() {
     super.initState();
+    _startBroadcast(12345);
+    _startListening();
     _controller = AnimationController(
       duration: Duration(seconds: 2),
       vsync: this,
@@ -79,6 +82,23 @@ class _DiscoverPageState extends State<DiscoverPage>
       });
     });
   }
+
+  Future<void> _startBroadcast(int port) async {
+    try {
+      await platform.invokeMethod('broadcastIp', {'port': port});
+    } on PlatformException catch (e) {
+      print("Failed to start broadcast: '${e.message}'.");
+    }
+  }
+
+  Future<void> _startListening() async {
+    try {
+      await platform.invokeMethod('listenForBroadcasts');
+    } on PlatformException catch (e) {
+      print("Failed to start listening: '${e.message}'.");
+    }
+  }
+
 
   void _removeStaleDevices() {
     final now = DateTime.now();

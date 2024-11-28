@@ -56,6 +56,11 @@ class _GeneratedIdPageState extends State<GeneratedIdPage> {
     }
   }
 
+  Future<void> _setLoggedIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,10 +119,10 @@ class _GeneratedIdPageState extends State<GeneratedIdPage> {
               child: Center(
                 child: publicKey.isNotEmpty
                     ? QrImageView(
-                        data: publicKey,
-                        version: QrVersions.auto,
-                        size: 200.0,
-                      )
+                  data: publicKey,
+                  version: QrVersions.auto,
+                  size: 200.0,
+                )
                     : CircularProgressIndicator(),
               ),
             ),
@@ -156,9 +161,11 @@ class _GeneratedIdPageState extends State<GeneratedIdPage> {
             ),
             Spacer(),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                await _setLoggedIn();
                 Navigator.pushNamed(context, '/messages');
                 MyApp().startBroadcast(12345);
+                // MyApp().startListening();
               },
               child: Text(
                 'Next',

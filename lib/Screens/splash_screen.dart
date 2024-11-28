@@ -1,37 +1,61 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'messages_list.dart';
+import 'welcome_page.dart';
+import '../services/auth_services.dart'; // Import the AuthService
+import 'package:flutter/services.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
+  final AuthService _authService = AuthService(); // Create an instance of AuthService
+  static const platform = MethodChannel('com.example.dehati/broadcast');
 
   @override
   void initState() {
     super.initState();
 
     _controller = AnimationController(
-      duration: Duration(seconds: 2), // Duration of the animation
+      duration: Duration(seconds: 2),
       vsync: this,
     );
 
-    _scaleAnimation =
-        Tween<double>(begin: 0.5, end: 1.0).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
 
-    _controller.forward().then((value) {
-      // Navigate to the next screen after 2 seconds
+    _controller.forward().then((value) async {
+      bool loggedIn = await _authService.isLoggedIn(); // Use the AuthService to check login status
       Future.delayed(Duration(seconds: 1), () {
-        Navigator.pushReplacementNamed(context, '/welcome');
+        if (loggedIn) {
+          Navigator.pushReplacementNamed(context, '/messages');
+        } else {
+          Navigator.pushReplacementNamed(context, '/welcome');
+        }
       });
     });
+  }
+
+  Future<void> _startBroadcast(int port) async {
+    try {
+      await platform.invokeMethod('broadcastIp', {'port': port});
+    } on PlatformException catch (e) {
+      print("Failed to start broadcast: '${e.message}'.");
+    }
+  }
+
+  Future<void> _startListening() async {
+    try {
+      await platform.invokeMethod('listenForBroadcasts');
+    } on PlatformException catch (e) {
+      print("Failed to start listening: '${e.message}'.");
+    }
   }
 
   @override
@@ -52,8 +76,8 @@ class _SplashScreenState extends State<SplashScreen>
             children: [
               Spacer(),
               Image.asset(
-                'assets/logo.png', // Make sure the path is correct
-                height: 500, // Adjust the height as needed
+                'assets/logo.png',
+                height: 500,
               ),
               SizedBox(height: 20),
               GestureDetector(
