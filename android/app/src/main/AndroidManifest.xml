@@ -30,6 +30,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <service android:name=".BroadcastService" android:exported="false"/>
     </application>
     <queries>
         <intent>

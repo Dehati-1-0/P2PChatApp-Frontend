@@ -3,7 +3,9 @@ package com.example.dehati
 import com.example.dehati.util.getLocalIpAddress
 import com.example.dehati.util.getDeviceModelName
 import android.content.Context
+import android.content.Intent
 import android.net.wifi.WifiManager
+import android.os.Bundle
 import android.util.Base64
 import android.util.Log
 import io.flutter.embedding.android.FlutterActivity
@@ -11,22 +13,18 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.*
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.Inet4Address
-import java.net.InetAddress
-import java.net.ServerSocket
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.PrintWriter
+import java.net.DatagramPacket
+import java.net.DatagramSocket
+import java.net.InetAddress
+import java.net.ServerSocket
+import java.security.KeyFactory
 import java.security.KeyPair
 import java.security.KeyPairGenerator
-import java.security.KeyFactory
 import java.security.PrivateKey
 import java.security.spec.PKCS8EncodedKeySpec
-import java.security.spec.X509EncodedKeySpec
-
-data class DiscoveredDevice(val ip: String, val modelName: String)
 
 class MainActivity: FlutterActivity() {
 
@@ -38,10 +36,16 @@ class MainActivity: FlutterActivity() {
     private var eventSink: EventChannel.EventSink? = null
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        startBroadcastService(12345) // Start the service with a default port
+    }
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        val binaryMessenger = flutterEngine.dartExecutor.binaryMessenger
 
-        EventChannel(flutterEngine.dartExecutor.binaryMessenger, DISCOVERED_DEVICES_CHANNEL).setStreamHandler(
+        EventChannel(binaryMessenger, DISCOVERED_DEVICES_CHANNEL).setStreamHandler(
             object : EventChannel.StreamHandler {
                 override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
                     eventSink = events
@@ -55,38 +59,34 @@ class MainActivity: FlutterActivity() {
             }
         )
 
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, BROADCAST_CHANNEL).setMethodCallHandler { call, result ->
+        MethodChannel(binaryMessenger, BROADCAST_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "startBroadcast") {
                 val port = call.argument<Int>("port") ?: 8000
-                broadcastIp(port)
+                startBroadcastService(port)
                 result.success("Broadcast started on port $port")
             } else {
                 result.notImplemented()
             }
         }
 
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SEND_MESSAGE_CHANNEL).setMethodCallHandler { call, result ->
+        MethodChannel(binaryMessenger, SEND_MESSAGE_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "sendMessage") {
                 val message = call.argument<String>("message")
                 val serverIp = call.argument<String>("serverIp")
                 val serverPort = call.argument<Int>("serverPort")
                 if (message != null && serverIp != null && serverPort != null) {
                     sendMessage(message, serverIp, serverPort) { success ->
-                        if (success) {
-                            result.success("Message sent successfully")
-                        } else {
-                            result.error("ERROR", "Failed to send message", null)
-                        }
+                        result.success(success)
                     }
                 } else {
-                    result.error("ERROR", "Invalid arguments", null)
+                    result.error("INVALID_ARGUMENTS", "Invalid arguments for sendMessage", null)
                 }
             } else {
                 result.notImplemented()
             }
         }
 
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, RECEIVE_MESSAGE_CHANNEL).setMethodCallHandler { call, result ->
+        MethodChannel(binaryMessenger, RECEIVE_MESSAGE_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "startServer") {
                 val port = call.argument<Int>("port") ?: 8000
                 startServer(port) { message ->
@@ -100,7 +100,7 @@ class MainActivity: FlutterActivity() {
             }
         }
 
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, KEYS_CHANNEL).setMethodCallHandler { call, result ->
+        MethodChannel(binaryMessenger, KEYS_CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
                 "generateKeyPair" -> {
                     val keyPair = generateKeyPair()
@@ -115,15 +115,22 @@ class MainActivity: FlutterActivity() {
                             val publicKey = generatePublicKeyFromPrivate(privateKeyString)
                             result.success(publicKey)
                         } catch (e: Exception) {
-                            result.error("ERROR", "Failed to generate public key", e.message)
+                            result.error("KEY_GENERATION_FAILED", "Failed to generate public key", e.message)
                         }
                     } else {
-                        result.error("ERROR", "Invalid arguments", null)
+                        result.error("INVALID_ARGUMENTS", "Invalid arguments for generatePublicKey", null)
                     }
                 }
                 else -> result.notImplemented()
             }
         }
+    }
+
+    private fun startBroadcastService(port: Int) {
+        val intent = Intent(this, BroadcastService::class.java).apply {
+            putExtra("port", port)
+        }
+        startService(intent)
     }
 
     private fun listenForBroadcasts(wifiManager: WifiManager) {
@@ -172,7 +179,7 @@ class MainActivity: FlutterActivity() {
                 Log.d("P2PChatApp", "Broadcasting IP: $localIpAddress")
                 while (true) {
                     socket.send(packet)
-                    kotlinx.coroutines.delay(5000L)
+                    delay(5000L)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
