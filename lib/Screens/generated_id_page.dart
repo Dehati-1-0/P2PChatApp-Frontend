@@ -75,113 +75,116 @@ class _GeneratedIdPageState extends State<GeneratedIdPage> {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(height: 10),
-            Text(
-              'WELCOME',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF0A174E),
-              ),
-            ),
-            SizedBox(height: 20),
-            Image.asset(
-              'assets/logo.png',
-              height: 100,
-            ),
-            SizedBox(height: 20),
-            Text(
-              'This is your username: $userName',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Your Public Key',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
-            ),
-            SizedBox(height: 10),
-            Screenshot(
-              controller: _screenshotController,
-              child: Center(
-                child: publicKey.isNotEmpty
-                    ? QrImageView(
-                  data: publicKey,
-                  version: QrVersions.auto,
-                  size: 200.0,
-                )
-                    : CircularProgressIndicator(),
-              ),
-            ),
-            SizedBox(height: 20),
-            Container(
-              height: 80,
-              padding: EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Text(
-                  publicKey,
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                Clipboard.setData(ClipboardData(text: publicKey));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Public Key copied to clipboard!'),
-                  ),
-                );
-              },
-              child: Text('Copy Public Key'),
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _downloadQRCode,
-              child: Text('Download QR Code'),
-            ),
-            Spacer(),
-            ElevatedButton(
-              onPressed: () async {
-                await _setLoggedIn();
-                Navigator.pushNamed(context, '/messages');
-                MyApp().startBroadcast(12345);
-                // MyApp().startListening();
-              },
-              child: Text(
-                'Next',
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 10),
+              Text(
+                'WELCOME',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF0A174E),
                 ),
               ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF1A2247),
-                padding: EdgeInsets.symmetric(vertical: 16),
+              SizedBox(height: 20),
+              Image.asset(
+                'assets/logo.png',
+                height: 100,
               ),
-            ),
-            SizedBox(height: 20),
-          ],
+              SizedBox(height: 20),
+              Text(
+                'This is your username: $userName',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Your Public Key',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                ),
+              ),
+              SizedBox(height: 10),
+              Screenshot(
+                controller: _screenshotController,
+                child: Center(
+                  child: publicKey.isNotEmpty
+                      ? QrImageView(
+                    data: publicKey,
+                    version: QrVersions.auto,
+                    size: 200.0,
+                  )
+                      : CircularProgressIndicator(),
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                height: 100,
+                padding: EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Text(
+                    publicKey,
+                    style: TextStyle(fontSize: 14, color: Colors.black),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: publicKey));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Public Key copied to clipboard!'),
+                    ),
+                  );
+                },
+                child: Text('Copy Public Key'),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: _downloadQRCode,
+                child: Text('Download QR Code'),
+              ),
+              SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: () async {
+                  await _setLoggedIn();
+                  Navigator.pushNamed(context, '/messages');
+                  MyApp().startBroadcast(12345);
+                  // MyApp().startListening();
+                },
+                child: Text(
+                  'Next',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF1A2247),
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                ),
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

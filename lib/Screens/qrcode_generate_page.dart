@@ -144,19 +144,24 @@ class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
                 ),
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/username');
-                },
-                child: Text(
-                  'Continue',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+              
+              SizedBox(
+                height: 60,
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/username');
+                  },
+                  child: Text(
+                    'Continue',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF1A2247),
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                  ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF1A2247),
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                ),
-              ),
+              )
             ],
           ),
         ),

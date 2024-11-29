@@ -94,6 +94,21 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             SizedBox(height: 10),
+
+            Center(
+              child: Text(
+                "Or",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color.fromARGB(61, 135, 136, 144).withOpacity(0.3)
+                ),
+              )
+            ),
+            SizedBox(
+              height: 10,
+            ),
+
             Center(
               child: InkWell(
                 onTap: () {
@@ -108,9 +123,27 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
+
             SizedBox(height: 40),
-            Divider(color: Color.fromARGB(61, 135, 136, 144).withOpacity(0.3)),
-            SizedBox(height: 20),
+            Container(
+              height: 1,
+              width: 500,
+              color: Color.fromARGB(61, 135, 136, 144).withOpacity(0.3),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Center(
+                child: Text(
+                  "Or",
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Color.fromARGB(61, 135, 136, 144).withOpacity(0.3)),
+                )),
+
+           // Divider(color: Color.fromARGB(61, 135, 136, 144).withOpacity(0.3)),
+            SizedBox(height: 30),
             Center(
               child: Text(
                 "Are You New Here?",
