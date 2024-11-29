@@ -109,7 +109,7 @@ class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
                               version: QrVersions.auto,
                             )
                           : CircularProgressIndicator(),
-                      SizedBox(height: 30),
+                      SizedBox(height: 20),
                       Container(
                         height: 150,
                         child: TextField(
@@ -122,7 +122,7 @@ class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: () {
                           Clipboard.setData(ClipboardData(text: privateKey));
@@ -134,7 +134,7 @@ class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
                         },
                         child: Text('Copy Private Key'),
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: _downloadQRCode,
                         child: Text('Download QR Code'),
