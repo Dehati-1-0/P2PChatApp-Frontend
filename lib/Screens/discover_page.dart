@@ -43,36 +43,28 @@ class _DiscoverPageState extends State<DiscoverPage>
       ..repeat(reverse: true); // Repeat the animation forward and backward
 
     _subscription = _eventChannel.receiveBroadcastStream().listen(
-      (dynamic event) {
-        print(
-            "Event received: $event"); // Debug log to check if events are received
+          (dynamic event) {
+        print("Event received: $event"); // Debug log to check if events are received
         setState(() {
-          // _devices
-          //     .add(DiscoveredDevice.fromJson(Map<String, dynamic>.from(event)));
-          // print("Devices: $_devices");
-
-          // Create a new list with the current device
-          // List<DiscoveredDevice> currentDevices = [
-          //   DiscoveredDevice.fromJson(Map<String, dynamic>.from(event))
-          // ];
-
-          // Update the _devices list with unique devices
-          // _devices
-          //   ..clear()
-          //   ..addAll(currentDevices.toSet().toList());
-          // print("Devices: $_devices"); // Print the devices list here
-
-          final device = DiscoveredDevice.fromJson(Map<String, dynamic>.from(event));
-          _deviceMap[device.ip] = device;
-          _deviceMap[device.ip]!.lastSeen = DateTime.now();
-          _updateDeviceList();
-
+          if (event is String) {
+            // Handle the event as a plain text message
+            print("Received plain text message: $event");
+          } else if (event is Map) {
+            // Handle the event as a DiscoveredDevice
+            final device = DiscoveredDevice.fromJson(Map<String, dynamic>.from(event));
+            _deviceMap[device.ip] = device;
+            _deviceMap[device.ip]!.lastSeen = DateTime.now();
+            _updateDeviceList();
+          } else {
+            print("Unexpected event type: $event");
+          }
         });
       },
       onError: (dynamic error) {
         print('Received error: ${error.message}');
       },
     );
+
 
     // Timer to remove devices that have not been seen for 10 seconds
     _timer = Timer.periodic(Duration(seconds: 10), (timer) {

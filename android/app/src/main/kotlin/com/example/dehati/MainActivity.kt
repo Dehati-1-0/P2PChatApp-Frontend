@@ -86,14 +86,22 @@ class MainActivity: FlutterActivity() {
             }
         }
 
+        EventChannel(binaryMessenger, RECEIVE_MESSAGE_CHANNEL).setStreamHandler(
+            object : EventChannel.StreamHandler {
+                override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+                    eventSink = events
+                }
+
+                override fun onCancel(arguments: Any?) {
+                    eventSink = null
+                }
+            }
+        )
+
         MethodChannel(binaryMessenger, RECEIVE_MESSAGE_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "startServer") {
                 val port = call.argument<Int>("port") ?: 8000
-                startServer(port) { message ->
-                    runOnUiThread {
-                        eventSink?.success(message)
-                    }
-                }
+                startServer(port)
                 result.success("Server started on port $port")
             } else {
                 result.notImplemented()
@@ -152,11 +160,10 @@ class MainActivity: FlutterActivity() {
                     if (message.startsWith("DISCOVER:") && !message.contains(localIpAddress as CharSequence, ignoreCase = true)) {
                         val parts = message.split(":")
                         if (parts.size >= 3) {
-                            val ip = parts[1]
+                            val deviceIp = parts[1]
                             val modelName = parts[2]
-                            val device = DiscoveredDevice(ip, modelName)
                             withContext(Dispatchers.Main) {
-                                eventSink?.success(mapOf("ip" to device.ip, "modelName" to device.modelName))
+                                eventSink?.success(mapOf("ip" to deviceIp, "modelName" to modelName))
                             }
                         }
                     }
@@ -233,7 +240,7 @@ class MainActivity: FlutterActivity() {
         }
     }
 
-    fun startServer(port: Int, onMessageReceived: (String) -> Unit) {
+    fun startServer(port: Int) {
         Thread {
             try {
                 val serverSocket = ServerSocket(port)
@@ -243,13 +250,13 @@ class MainActivity: FlutterActivity() {
                     val clientIp = clientSocket.inetAddress.hostAddress
                     Log.d("P2PChatApp", "Client connected: $clientIp")
                     val reader = BufferedReader(InputStreamReader(clientSocket.getInputStream()))
+                    val writer = PrintWriter(clientSocket.getOutputStream(), true)
                     val message = reader.readLine()
                     if (message != null) {
                         Log.d("P2PChatApp", "Message received: $message")
                         runOnUiThread {
-                            onMessageReceived(message)
+                            eventSink?.success(message)
                         }
-                        val writer = PrintWriter(clientSocket.getOutputStream(), true)
                         writer.println("ACK")
                         writer.flush()
                     }

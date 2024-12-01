@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'user_profile_page.dart'; // Import the user profile page
-import '../services/message_sender.dart';// Import the MessageSender class
+import '../services/message_sender.dart'; // Import the MessageSender class
 import '../models/message.dart';
 
 class ChatPage extends StatefulWidget {
-  // Add a TextEditingController to manage the input field text
-  final TextEditingController _messageController = TextEditingController();
-
   final String userName;
   final String userAvatar;
   final bool isOnline;
@@ -27,18 +24,17 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   static const platform = MethodChannel('com.example.p2pchat/receiveMessage');
-  // final List<Map<String, String>> _messages = [];
-  final List<Message> _messages = [];
+  static const EventChannel _eventChannel = EventChannel('com.example.p2pchat/receiveMessage');
+  final List<Map<String, String>> _messages = [];
 
   @override
   void initState() {
     super.initState();
     print("initState called");
     _startServer();
-    _setupMessageListener();
+    _startListeningForMessages();
   }
 
-  // Method to navigate to the UserProfilePage
   void _navigateToUserProfile(BuildContext context) {
     Navigator.push(
       context,
@@ -51,29 +47,50 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  // Method to send the message and clear the input field
+  void _startListeningForMessages() {
+    _eventChannel.receiveBroadcastStream().listen((dynamic event) {
+      print("Received event: $event"); // Debugging event itself
+
+      setState(() {
+        if (event is String) {
+          print("Received plain text message: $event");
+          _messages.add({'type': 'received', 'message': event});
+        } else if (event is Map) {
+          // Ensure we properly handle maps
+          String message = event['message'] ?? 'Unknown Message';
+          print("Received map event, message: $message");
+          _messages.add({'type': 'received', 'message': message});
+        } else {
+          print("Received unknown event format: $event");
+        }
+      });
+    }, onError: (error) {
+      print("Error listening for events: $error");
+    });
+  }
+
+
   void _sendMessage() {
     String message = _messageController.text;
     if (message.isNotEmpty) {
-      // Call your message sender backend method here
       MessageSender.sendMessage(message, widget.deviceIp, 12345).then((result) {
         if (result['success']) {
-          // setState(() {
-          //   _messages.add({'type': 'sent', 'message': message});
-          // });
           setState(() {
-            _messages.add(Message(
-              sender: 'Me',
-              content: message,
-              timestamp: DateTime.now(),
-            ));
+            _messages.add({'type': 'sent', 'message': message});
           });
           print("Message sent to ${result['serverIp']}:${result['serverPort']}");
         } else {
           print("Failed to send message to ${result['serverIp']}:${result['serverPort']}");
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Failed to send message'))
+          );
         }
+      }).catchError((error) {
+        print('Error sending message: $error');
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error sending message'))
+        );
       });
-      // Clear the input field after sending the message
       _messageController.clear();
     }
   }
@@ -86,21 +103,6 @@ class _ChatPageState extends State<ChatPage> {
     } on PlatformException catch (e) {
       print("Failed to start server: '${e.message}'.");
     }
-  }
-
-  void _setupMessageListener() {
-    platform.setMethodCallHandler((call) async {
-      if (call.method == 'onMessageReceived') {
-        final String message = call.arguments;
-        setState(() {
-          _messages.add(Message(
-            sender: widget.userName,
-            content: message,
-            timestamp: DateTime.now(),
-          ));
-        });
-      }
-    });
   }
 
   @override
@@ -141,35 +143,18 @@ class _ChatPageState extends State<ChatPage> {
       body: Column(
         children: [
           SizedBox(height: 10),
-          // Expanded(
-          //   child: ListView(
-          //     padding: const EdgeInsets.all(16.0),
-          //     children: [
-          //       _buildReceivedMessage(
-          //           context, 'Hi, How\'s work been lately ?', userAvatar),
-          //       _buildSentMessage(context,
-          //           'Hey ! it\'s been alright, just the usual grind. How about you ?'),
-          //       _buildReceivedMessage(
-          //           context,
-          //           'Not too bad Nihara. I\'ve been working on a few Projects',
-          //           userAvatar),
-          //       _buildSentMessage(
-          //           context, 'That sounds interesting. Anything exciting ?'),
-          //       _buildReceivedMessage(context, 'Typing.........', userAvatar),
-          //     ],
-          //   ),
-          // ),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(16.0),
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final message = _messages[index];
-                if (message.sender == 'Me') {
-                  return _buildSentMessage(context, message.content);
-                } else {
-                  return _buildReceivedMessage(context, message.content, widget.userAvatar);
+                if (message['type'] == 'sent') {
+                  return _buildSentMessage(context, message['message']!);
+                } else if (message['type'] == 'received') {
+                  return _buildReceivedMessage(context, message['message']!, widget.userAvatar);
                 }
+                return SizedBox.shrink(); // Return an empty widget if message type is not recognized
               },
             ),
           ),
@@ -179,9 +164,8 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  // Method to build received message bubbles
-  Widget _buildReceivedMessage(
-      BuildContext context, String message, String avatarPath) {
+  Widget _buildReceivedMessage(BuildContext context, String message, String avatarPath) {
+    print("Building received message: $message");  // Debug print
     return Align(
       alignment: Alignment.centerLeft,
       child: ConstrainedBox(
@@ -212,7 +196,6 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  // Method to build sent message bubbles
   Widget _buildSentMessage(BuildContext context, String message) {
     return Align(
       alignment: Alignment.centerRight,
@@ -235,7 +218,6 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  // The input field and send button
   Widget _buildMessageInput() {
     return Container(
       padding: const EdgeInsets.all(8.0),
