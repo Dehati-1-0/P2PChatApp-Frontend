@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'user_profile_page.dart'; // Import the user profile page
-import '../services/message_sender.dart';// Import the MessageSender class
+import '../services/message_sender.dart'; // Import the MessageSender class
 import '../models/message.dart';
 
 class ChatPage extends StatefulWidget {
-  // Add a TextEditingController to manage the input field text
-  final TextEditingController _messageController = TextEditingController();
-
   final String userName;
   final String userAvatar;
   final bool isOnline;
@@ -27,18 +24,15 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   static const platform = MethodChannel('com.example.p2pchat/receiveMessage');
-  // final List<Map<String, String>> _messages = [];
   final List<Message> _messages = [];
 
   @override
   void initState() {
     super.initState();
-    print("initState called");
     _startServer();
     _setupMessageListener();
   }
 
-  // Method to navigate to the UserProfilePage
   void _navigateToUserProfile(BuildContext context) {
     Navigator.push(
       context,
@@ -51,16 +45,11 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  // Method to send the message and clear the input field
   void _sendMessage() {
     String message = _messageController.text;
     if (message.isNotEmpty) {
-      // Call your message sender backend method here
       MessageSender.sendMessage(message, widget.deviceIp, 12345).then((result) {
         if (result['success']) {
-          // setState(() {
-          //   _messages.add({'type': 'sent', 'message': message});
-          // });
           setState(() {
             _messages.add(Message(
               sender: 'Me',
@@ -68,21 +57,17 @@ class _ChatPageState extends State<ChatPage> {
               timestamp: DateTime.now(),
             ));
           });
-          print("Message sent to ${result['serverIp']}:${result['serverPort']}");
         } else {
           print("Failed to send message to ${result['serverIp']}:${result['serverPort']}");
         }
       });
-      // Clear the input field after sending the message
       _messageController.clear();
     }
   }
 
   void _startServer() async {
-    print("Starting server...");
     try {
       await platform.invokeMethod('startServer', {'port': 12345});
-      print("Server started successfully.");
     } on PlatformException catch (e) {
       print("Failed to start server: '${e.message}'.");
     }
@@ -91,14 +76,21 @@ class _ChatPageState extends State<ChatPage> {
   void _setupMessageListener() {
     platform.setMethodCallHandler((call) async {
       if (call.method == 'onMessageReceived') {
-        final String message = call.arguments;
-        setState(() {
-          _messages.add(Message(
-            sender: widget.userName,
-            content: message,
-            timestamp: DateTime.now(),
-          ));
-        });
+        final dynamic message = call.arguments;
+        if (message is String) {
+          setState(() {
+            _messages.add(Message(
+              sender: widget.userName,
+              content: message,
+              timestamp: DateTime.now(),
+            ));
+          });
+        } else if (message is Map<dynamic, dynamic>) {
+          // Handle the case where the message is a Map
+          print("Received message is a Map: $message");
+        } else {
+          print("Received message is of unknown type: $message");
+        }
       }
     });
   }
@@ -141,24 +133,6 @@ class _ChatPageState extends State<ChatPage> {
       body: Column(
         children: [
           SizedBox(height: 10),
-          // Expanded(
-          //   child: ListView(
-          //     padding: const EdgeInsets.all(16.0),
-          //     children: [
-          //       _buildReceivedMessage(
-          //           context, 'Hi, How\'s work been lately ?', userAvatar),
-          //       _buildSentMessage(context,
-          //           'Hey ! it\'s been alright, just the usual grind. How about you ?'),
-          //       _buildReceivedMessage(
-          //           context,
-          //           'Not too bad Nihara. I\'ve been working on a few Projects',
-          //           userAvatar),
-          //       _buildSentMessage(
-          //           context, 'That sounds interesting. Anything exciting ?'),
-          //       _buildReceivedMessage(context, 'Typing.........', userAvatar),
-          //     ],
-          //   ),
-          // ),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(16.0),
@@ -173,20 +147,17 @@ class _ChatPageState extends State<ChatPage> {
               },
             ),
           ),
-          _buildMessageInput(), // The input field and send button
+          _buildMessageInput(),
         ],
       ),
     );
   }
 
-  // Method to build received message bubbles
-  Widget _buildReceivedMessage(
-      BuildContext context, String message, String avatarPath) {
+  Widget _buildReceivedMessage(BuildContext context, String message, String avatarPath) {
     return Align(
       alignment: Alignment.centerLeft,
       child: ConstrainedBox(
-        constraints:
-        BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
         child: Container(
           margin: const EdgeInsets.only(bottom: 20),
           padding: const EdgeInsets.all(10),
@@ -212,13 +183,11 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  // Method to build sent message bubbles
   Widget _buildSentMessage(BuildContext context, String message) {
     return Align(
       alignment: Alignment.centerRight,
       child: ConstrainedBox(
-        constraints:
-        BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
         child: Container(
           margin: const EdgeInsets.only(bottom: 20),
           padding: const EdgeInsets.all(10),
@@ -235,7 +204,6 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  // The input field and send button
   Widget _buildMessageInput() {
     return Container(
       padding: const EdgeInsets.all(8.0),
@@ -250,7 +218,7 @@ class _ChatPageState extends State<ChatPage> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: TextField(
-                controller: _messageController, // Attach the controller here
+                controller: _messageController,
                 decoration: InputDecoration(
                   hintText: 'Type a message...',
                   border: InputBorder.none,
@@ -266,7 +234,7 @@ class _ChatPageState extends State<ChatPage> {
             ),
             child: IconButton(
               icon: Icon(Icons.send, color: Colors.white),
-              onPressed: _sendMessage, // Use the _sendMessage method here
+              onPressed: _sendMessage,
             ),
           ),
         ],

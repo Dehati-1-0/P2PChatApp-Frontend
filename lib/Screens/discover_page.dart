@@ -15,7 +15,7 @@ class _DiscoverPageState extends State<DiscoverPage>
     with SingleTickerProviderStateMixin {
   static const platform = MethodChannel('com.example.dehati/broadcast');
   static const EventChannel _eventChannel =
-      EventChannel('com.example.p2pchat/discoveredDevices');
+  EventChannel('com.example.p2pchat/discoveredDevices');
   final Map<String, DiscoveredDevice> _deviceMap = {};
   final List<DiscoveredDevice> _devices = [];
   late StreamSubscription _subscription;
@@ -29,7 +29,6 @@ class _DiscoverPageState extends State<DiscoverPage>
   void initState() {
     super.initState();
     _startBroadcast(12345);
-    _startListening();
     _controller = AnimationController(
       duration: Duration(seconds: 2),
       vsync: this,
@@ -43,31 +42,9 @@ class _DiscoverPageState extends State<DiscoverPage>
       ..repeat(reverse: true); // Repeat the animation forward and backward
 
     _subscription = _eventChannel.receiveBroadcastStream().listen(
-      (dynamic event) {
-        print(
-            "Event received: $event"); // Debug log to check if events are received
-        setState(() {
-          // _devices
-          //     .add(DiscoveredDevice.fromJson(Map<String, dynamic>.from(event)));
-          // print("Devices: $_devices");
-
-          // Create a new list with the current device
-          // List<DiscoveredDevice> currentDevices = [
-          //   DiscoveredDevice.fromJson(Map<String, dynamic>.from(event))
-          // ];
-
-          // Update the _devices list with unique devices
-          // _devices
-          //   ..clear()
-          //   ..addAll(currentDevices.toSet().toList());
-          // print("Devices: $_devices"); // Print the devices list here
-
-          final device = DiscoveredDevice.fromJson(Map<String, dynamic>.from(event));
-          _deviceMap[device.ip] = device;
-          _deviceMap[device.ip]!.lastSeen = DateTime.now();
-          _updateDeviceList();
-
-        });
+          (dynamic event) {
+        print("Event received: $event"); // Debug log to check events
+        handleReceivedEvent(event); // Use the handleReceivedEvent function
       },
       onError: (dynamic error) {
         print('Received error: ${error.message}');
@@ -83,6 +60,31 @@ class _DiscoverPageState extends State<DiscoverPage>
     });
   }
 
+  // Handle received event
+  void handleReceivedEvent(dynamic event) {
+    if (event is Map) {
+      // Process the event as a Map
+      final ip = event['ip'];
+      final modelName = event['modelName'];
+      print('Valid Map received: IP = $ip, Model Name = $modelName');
+
+      // Update device list if necessary
+      setState(() {
+        final device = DiscoveredDevice.fromJson(Map<String, dynamic>.from(event));
+        _deviceMap[device.ip] = device;
+        _deviceMap[device.ip]!.lastSeen = DateTime.now();
+        _updateDeviceList();
+      });
+    } else if (event is String) {
+      // Handle the case where the event is a String
+      print('Received a string message: $event');
+      // You can decide what to do with the string message here
+    } else {
+      // Handle unexpected data types
+      print('Unexpected data type received: ${event.runtimeType}');
+    }
+  }
+
   Future<void> _startBroadcast(int port) async {
     try {
       await platform.invokeMethod('broadcastIp', {'port': port});
@@ -90,15 +92,6 @@ class _DiscoverPageState extends State<DiscoverPage>
       print("Failed to start broadcast: '${e.message}'.");
     }
   }
-
-  Future<void> _startListening() async {
-    try {
-      await platform.invokeMethod('listenForBroadcasts');
-    } on PlatformException catch (e) {
-      print("Failed to start listening: '${e.message}'.");
-    }
-  }
-
 
   void _removeStaleDevices() {
     final now = DateTime.now();
@@ -252,7 +245,6 @@ class DeviceWidget extends StatelessWidget {
         GestureDetector(
           onTap: () {
             // Navigate to the empty chat page
-            // Navigator.pushNamed(context, '/messages');
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -262,10 +254,6 @@ class DeviceWidget extends StatelessWidget {
                   isOnline: true, // Set this based on your logic
                   deviceIp: device.ip, // Pass the discovered device IP
                 ),
-                // builder: (context) => EmptyChatsPage(
-                //   username: device.modelName,
-                //   avatarPath: 'assets/discover icons/cat.png',
-                // ),
               ),
             );
           },
