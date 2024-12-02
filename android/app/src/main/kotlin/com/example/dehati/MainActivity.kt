@@ -152,12 +152,13 @@ class MainActivity: FlutterActivity() {
                     val message = String(packet.data, 0, packet.length)
                     if (message.startsWith("DISCOVER:") && !message.contains(localIpAddress as CharSequence, ignoreCase = true)) {
                         val parts = message.split(":")
-                        if (parts.size >= 3) {
+                        if (parts.size >= 4) {
                             val ip = parts[1]
                             val modelName = parts[2]
-                            val device = DiscoveredDevice(ip, modelName)
+                            val username = parts[3]
+                            val device = DiscoveredDevice(ip, modelName, username)
                             withContext(Dispatchers.Main) {
-                                eventSink?.success(mapOf("ip" to device.ip, "modelName" to device.modelName))
+                                eventSink?.success(mapOf("ip" to device.ip, "modelName" to device.modelName, "username" to device.username))
                             }
                         }
                     }
@@ -175,7 +176,7 @@ class MainActivity: FlutterActivity() {
                 val socket = DatagramSocket()
                 socket.broadcast = true
                 val localIpAddress = getLocalIpAddress() ?: return@launch
-                val message = "DISCOVER:$localIpAddress:${getDeviceModelName()}"
+                val message = "DISCOVER:$localIpAddress:${getDeviceModelName()}:${getUsername()}"
                 val packet = DatagramPacket(message.toByteArray(), message.length, broadcastAddress, port)
                 Log.d("P2PChatApp", "Broadcasting IP: $localIpAddress")
                 while (true) {
@@ -187,6 +188,11 @@ class MainActivity: FlutterActivity() {
                 Log.e("P2PChatApp", "Error broadcasting IP: ${e.message}")
             }
         }
+    }
+
+    private fun getUsername(): String {
+        val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("username", "Unknown") ?: "Unknown"
     }
 
     private fun generateKeyPair(): KeyPair {

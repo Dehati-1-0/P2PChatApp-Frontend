@@ -249,29 +249,23 @@ class DeviceWidget extends StatelessWidget {
       children: [
         Text(device.modelName),
         Text(device.ip),
+        Text(device.username), // Display the username
         GestureDetector(
           onTap: () {
-            // Navigate to the empty chat page
-            // Navigator.pushNamed(context, '/messages');
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => ChatPage(
                   userName: device.modelName,
-                  userAvatar: 'assets/discover icons/cat.png', // Replace with dynamic image if needed
-                  isOnline: true, // Set this based on your logic
-                  deviceIp: device.ip, // Pass the discovered device IP
+                  userAvatar: 'assets/discover icons/cat.png',
+                  isOnline: true,
+                  deviceIp: device.ip,
                 ),
-                // builder: (context) => EmptyChatsPage(
-                //   username: device.modelName,
-                //   avatarPath: 'assets/discover icons/cat.png',
-                // ),
               ),
             );
           },
           child: CircleAvatar(
-            backgroundImage: AssetImage(
-                'assets/discover icons/cat.png'), // Replace with dynamic images if needed
+            backgroundImage: AssetImage('assets/discover icons/cat.png'),
             radius: 30,
           ),
         ),

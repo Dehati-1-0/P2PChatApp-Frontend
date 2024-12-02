@@ -8,6 +8,7 @@ import kotlinx.coroutines.*
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
+import android.content.Context
 
 class BroadcastService : Service() {
 
@@ -23,6 +24,11 @@ class BroadcastService : Service() {
         return null
     }
 
+    private fun getUsername(): String {
+        val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("username", "Unknown") ?: "Unknown"
+    }
+
     private fun startBroadcasting(port: Int) {
         scope.launch {
             try {
@@ -30,7 +36,7 @@ class BroadcastService : Service() {
                 val socket = DatagramSocket()
                 socket.broadcast = true
                 val localIpAddress = getLocalIpAddress() ?: return@launch
-                val message = "DISCOVER:$localIpAddress:${getDeviceModelName()}"
+                val message = "DISCOVER:$localIpAddress:${getDeviceModelName()}:${getUsername()}"
                 val packet = DatagramPacket(message.toByteArray(), message.length, broadcastAddress, port)
                 Log.d("BroadcastService", "Broadcasting IP: $localIpAddress")
                 while (true) {

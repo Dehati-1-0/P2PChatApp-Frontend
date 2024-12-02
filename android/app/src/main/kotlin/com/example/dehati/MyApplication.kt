@@ -12,6 +12,7 @@ import java.net.InetAddress
 import android.util.Log
 import com.example.dehati.util.getLocalIpAddress
 import com.example.dehati.util.getDeviceModelName
+import android.content.Context
 
 class MyApplication : Application() {
     val applicationScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -21,6 +22,11 @@ class MyApplication : Application() {
         startBroadcasting()
     }
 
+    private fun getUsername(): String {
+        val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("username", "Unknown") ?: "Unknown"
+    }
+
     private fun startBroadcasting() {
         applicationScope.launch {
             try {
@@ -28,7 +34,7 @@ class MyApplication : Application() {
                 val socket = DatagramSocket()
                 socket.broadcast = true
                 val localIpAddress = getLocalIpAddress() ?: return@launch
-                val message = "DISCOVER:$localIpAddress:${getDeviceModelName()}"
+                val message = "DISCOVER:$localIpAddress:${getDeviceModelName()}:${getUsername()}"
                 val packet = DatagramPacket(message.toByteArray(), message.length, broadcastAddress, 8000)
                 Log.d("P2PChatApp", "Broadcasting IP: $localIpAddress")
                 while (true) {
