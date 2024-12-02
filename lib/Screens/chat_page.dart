@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'user_profile_page.dart'; // Import the user profile page
-import '../services/message_sender.dart';// Import the MessageSender class
+import '../services/message_sender.dart'; // Import the MessageSender class
 import '../models/message.dart';
+import '../services/database_service.dart';
 
 class ChatPage extends StatefulWidget {
-  // Add a TextEditingController to manage the input field text
-  final TextEditingController _messageController = TextEditingController();
-
-  final String userName;
+  final String userName; // Receiver's username
   final String userAvatar;
   final bool isOnline;
   final String deviceIp;
@@ -27,15 +25,14 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   static const platform = MethodChannel('com.example.p2pchat/receiveMessage');
-  // final List<Map<String, String>> _messages = [];
   final List<Message> _messages = [];
 
   @override
   void initState() {
     super.initState();
-    print("initState called");
     _startServer();
     _setupMessageListener();
+    _loadMessages(); // Load messages from the database on page load
   }
 
   // Method to navigate to the UserProfilePage
@@ -51,35 +48,52 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  // Load messages from the database
+  Future<void> _loadMessages() async {
+    final savedMessages = await DatabaseService().getMessages(
+      'Me', // Current user as the senderUsername
+      widget.userName, // Receiver's username
+    );
+    setState(() {
+      _messages.addAll(savedMessages);
+    });
+  }
+
   // Method to send the message and clear the input field
-  void _sendMessage() {
-    String message = _messageController.text;
-    if (message.isNotEmpty) {
-      // Call your message sender backend method here
-      MessageSender.sendMessage(message, widget.deviceIp, 12345).then((result) {
+  void _sendMessage() async {
+    String messageContent = _messageController.text;
+    if (messageContent.isNotEmpty) {
+      MessageSender.sendMessage(messageContent, widget.deviceIp, 12345).then((result) async {
         if (result['success']) {
-          // setState(() {
-          //   _messages.add({'type': 'sent', 'message': message});
-          // });
+          final newMessage = Message(
+            senderUsername: 'Me',
+            senderIp: 'My Device IP',
+            senderModelName: 'My Device Model',
+            receiverUsername: widget.userName,
+            receiverIp: widget.deviceIp,
+            receiverModelName: 'Receiver Device Model', // Update with actual data
+            content: messageContent,
+            timestamp: DateTime.now(),
+          );
+
           setState(() {
-            _messages.add(Message(
-              sender: 'Me',
-              content: message,
-              timestamp: DateTime.now(),
-            ));
+            _messages.add(newMessage);
           });
+
+          // Save the sent message to the database
+          await DatabaseService().saveMessage(newMessage);
+
           print("Message sent to ${result['serverIp']}:${result['serverPort']}");
         } else {
           print("Failed to send message to ${result['serverIp']}:${result['serverPort']}");
         }
       });
-      // Clear the input field after sending the message
-      _messageController.clear();
+
+      _messageController.clear(); // Clear the input field after sending
     }
   }
 
   void _startServer() async {
-    print("Starting server...");
     try {
       await platform.invokeMethod('startServer', {'port': 12345});
       print("Server started successfully.");
@@ -91,14 +105,24 @@ class _ChatPageState extends State<ChatPage> {
   void _setupMessageListener() {
     platform.setMethodCallHandler((call) async {
       if (call.method == 'onMessageReceived') {
-        final String message = call.arguments;
+        final String messageContent = call.arguments;
+        final newMessage = Message(
+          senderUsername: widget.userName,
+          senderIp: widget.deviceIp,
+          senderModelName: 'Sender Device Model', // Update with actual data
+          receiverUsername: 'Me',
+          receiverIp: 'My Device IP',
+          receiverModelName: 'My Device Model',
+          content: messageContent,
+          timestamp: DateTime.now(),
+        );
+
         setState(() {
-          _messages.add(Message(
-            sender: widget.userName,
-            content: message,
-            timestamp: DateTime.now(),
-          ));
+          _messages.add(newMessage);
         });
+
+        // Save the received message to the database
+        await DatabaseService().saveMessage(newMessage);
       }
     });
   }
@@ -120,10 +144,13 @@ class _ChatPageState extends State<ChatPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(widget.userName, style: TextStyle(color: Colors.black)),
-                  Text(widget.isOnline ? 'Online' : 'Offline',
-                      style: TextStyle(
-                          color: widget.isOnline ? Colors.green : Colors.red,
-                          fontSize: 12)),
+                  Text(
+                    widget.isOnline ? 'Online' : 'Offline',
+                    style: TextStyle(
+                      color: widget.isOnline ? Colors.green : Colors.red,
+                      fontSize: 12,
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -141,31 +168,13 @@ class _ChatPageState extends State<ChatPage> {
       body: Column(
         children: [
           SizedBox(height: 10),
-          // Expanded(
-          //   child: ListView(
-          //     padding: const EdgeInsets.all(16.0),
-          //     children: [
-          //       _buildReceivedMessage(
-          //           context, 'Hi, How\'s work been lately ?', userAvatar),
-          //       _buildSentMessage(context,
-          //           'Hey ! it\'s been alright, just the usual grind. How about you ?'),
-          //       _buildReceivedMessage(
-          //           context,
-          //           'Not too bad Nihara. I\'ve been working on a few Projects',
-          //           userAvatar),
-          //       _buildSentMessage(
-          //           context, 'That sounds interesting. Anything exciting ?'),
-          //       _buildReceivedMessage(context, 'Typing.........', userAvatar),
-          //     ],
-          //   ),
-          // ),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(16.0),
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final message = _messages[index];
-                if (message.sender == 'Me') {
+                if (message.senderUsername == 'Me') {
                   return _buildSentMessage(context, message.content);
                 } else {
                   return _buildReceivedMessage(context, message.content, widget.userAvatar);
@@ -173,7 +182,7 @@ class _ChatPageState extends State<ChatPage> {
               },
             ),
           ),
-          _buildMessageInput(), // The input field and send button
+          _buildMessageInput(),
         ],
       ),
     );
@@ -186,7 +195,7 @@ class _ChatPageState extends State<ChatPage> {
       alignment: Alignment.centerLeft,
       child: ConstrainedBox(
         constraints:
-        BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+            BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
         child: Container(
           margin: const EdgeInsets.only(bottom: 20),
           padding: const EdgeInsets.all(10),
@@ -218,7 +227,7 @@ class _ChatPageState extends State<ChatPage> {
       alignment: Alignment.centerRight,
       child: ConstrainedBox(
         constraints:
-        BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
+            BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
         child: Container(
           margin: const EdgeInsets.only(bottom: 20),
           padding: const EdgeInsets.all(10),
@@ -250,7 +259,7 @@ class _ChatPageState extends State<ChatPage> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: TextField(
-                controller: _messageController, // Attach the controller here
+                controller: _messageController,
                 decoration: InputDecoration(
                   hintText: 'Type a message...',
                   border: InputBorder.none,
@@ -266,7 +275,7 @@ class _ChatPageState extends State<ChatPage> {
             ),
             child: IconButton(
               icon: Icon(Icons.send, color: Colors.white),
-              onPressed: _sendMessage, // Use the _sendMessage method here
+              onPressed: _sendMessage,
             ),
           ),
         ],
