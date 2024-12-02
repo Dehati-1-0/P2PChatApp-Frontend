@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/custom_name_storage.dart';
+import 'dart:convert';
 
 
 class UserProfilePage extends StatefulWidget {
@@ -35,6 +36,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   Future<void> _saveCustomNames() async {
     await CustomNameStorage.saveCustomNames(_customNames);
+
+    final prefs = await SharedPreferences.getInstance();
+    final customNamesString = prefs.getString('customNames') ?? '{}';
+    final customNames = json.decode(customNamesString);
+    print("Saved Custom Names: $customNames");
   }
 
   @override

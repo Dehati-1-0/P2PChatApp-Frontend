@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../utils/custom_name_storage.dart';
+import 'dart:convert';
 
-// want to create a empty chats page
-class EmptyChatsPage extends StatelessWidget {
+// Create a stateful widget for EmptyChatsPage
+class EmptyChatsPage extends StatefulWidget {
   final String username;
   final String avatarPath;
 
@@ -12,6 +15,34 @@ class EmptyChatsPage extends StatelessWidget {
   });
 
   @override
+  _EmptyChatsPageState createState() => _EmptyChatsPageState();
+}
+
+class _EmptyChatsPageState extends State<EmptyChatsPage> {
+  late String _displayName;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDisplayName();
+  }
+
+  Future<void> _loadDisplayName() async {
+    try {
+      final customNames = await CustomNameStorage.loadCustomNames();
+
+      setState(() {
+        _displayName = customNames[widget.username] ?? widget.username;
+      });
+
+      print("Custom Names from chat page: $customNames");
+    } catch (e) {
+      print("Error loading custom names: $e");
+    }
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -19,8 +50,7 @@ class EmptyChatsPage extends StatelessWidget {
         title: Row(
           children: [
             CircleAvatar(
-              backgroundImage: AssetImage(avatarPath),
-              // radius: 20,
+              backgroundImage: AssetImage(widget.avatarPath), // Use `widget` to access avatarPath
             ),
             SizedBox(
               width: 10,
@@ -28,7 +58,10 @@ class EmptyChatsPage extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(username, style: TextStyle(color: Colors.black)),
+                Text(
+                  _displayName, // Use _displayName to show either custom or default name
+                  style: TextStyle(color: Colors.black),
+                ),
                 Text(
                   'Online',
                   style: TextStyle(color: Colors.green, fontSize: 12),
@@ -72,7 +105,7 @@ class EmptyChatsPage extends StatelessWidget {
           ),
           Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Row(
               children: [
                 Expanded(
@@ -88,7 +121,7 @@ class EmptyChatsPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         contentPadding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       ),
                     ),
                   ),
