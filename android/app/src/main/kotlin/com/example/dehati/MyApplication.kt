@@ -1,6 +1,8 @@
 package com.example.dehati
 
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -28,9 +30,11 @@ class MyApplication : Application() {
                 val socket = DatagramSocket()
                 socket.broadcast = true
                 val localIpAddress = getLocalIpAddress() ?: return@launch
-                val message = "DISCOVER:$localIpAddress:${getDeviceModelName()}"
+                val sharedPreferences: SharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                val username = sharedPreferences.getString("username", "UnknownUser")
+                val message = "DISCOVER:$localIpAddress:${getDeviceModelName()}:$username"
                 val packet = DatagramPacket(message.toByteArray(), message.length, broadcastAddress, 8000)
-                Log.d("P2PChatApp", "Broadcasting IP: $localIpAddress")
+                Log.d("P2PChatApp", "Broadcasting IP: $localIpAddress with username: $username")
                 while (true) {
                     socket.send(packet)
                     delay(5000L)
