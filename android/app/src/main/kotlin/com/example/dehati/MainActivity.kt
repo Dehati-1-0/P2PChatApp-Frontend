@@ -69,7 +69,7 @@ class MainActivity: FlutterActivity() {
             }
         }
 
-        MethodChannel(binaryMessenger, SEND_MESSAGE_CHANNEL).setMethodCallHandler { call, result ->
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SEND_MESSAGE_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "sendMessage") {
                 val message = call.argument<String>("message")
                 val serverIp = call.argument<String>("serverIp")
@@ -79,19 +79,20 @@ class MainActivity: FlutterActivity() {
                         result.success(success)
                     }
                 } else {
-                    result.error("INVALID_ARGUMENTS", "Invalid arguments for sendMessage", null)
+                    result.error("INVALID_ARGUMENTS", "Message, IP, or Port missing", null)
                 }
             } else {
                 result.notImplemented()
             }
         }
 
-        MethodChannel(binaryMessenger, RECEIVE_MESSAGE_CHANNEL).setMethodCallHandler { call, result ->
+        // Setup MethodChannel for receiving messages
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, RECEIVE_MESSAGE_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "startServer") {
                 val port = call.argument<Int>("port") ?: 8000
                 startServer(port) { message ->
                     runOnUiThread {
-                        eventSink?.success(message)
+                        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, RECEIVE_MESSAGE_CHANNEL).invokeMethod("onMessageReceived", message)
                     }
                 }
                 result.success("Server started on port $port")
