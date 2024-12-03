@@ -137,7 +137,15 @@ class _SettingsPageState extends State<SettingsPage> {
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(height: 8),
-                      Text(publicKey),
+                      // Text(publicKey),
+                      TextField(
+                        controller: TextEditingController(text: publicKey),
+                        maxLines: null,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
                       SizedBox(height: 20),
                       Center(
                         child: publicKey.isNotEmpty

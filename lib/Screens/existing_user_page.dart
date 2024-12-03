@@ -16,11 +16,18 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
   String privateKey = '';
   String username = '';
   ScreenshotController screenshotController = ScreenshotController();
+  TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     fetchKeys();
+  }
+
+  @override
+  void dispose(){
+    _controller.dispose();
+    super.dispose();
   }
 
   Future<void> fetchKeys() async {
@@ -123,66 +130,85 @@ class _WelcomeBackPageState extends State<WelcomeBackPage> {
                   : CircularProgressIndicator(),
             ),
             SizedBox(height: 10), // Reduced spacing
-            Text(
-              'Your Public Key',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
-            ),
+            // Text(
+            //   'Your Public Key',
+            //   textAlign: TextAlign.center,
+            //   style: TextStyle(
+            //     fontSize: 14,
+            //     color: Colors.grey,
+            //   ),
+            // ),
             SizedBox(height: 10),
-            Center(
-              child: publicKey.isNotEmpty
-                  ? Expanded(
-                      child: Container(
-                        height: 80, // Reduced container height
-                        child: SingleChildScrollView(
-                          child: SelectableText(
-                            publicKey,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  : CircularProgressIndicator(),
-            ),
+            // Center(
+            //   child: publicKey.isNotEmpty
+            //       ? Expanded(
+            //           child: Container(
+            //             height: 80, // Reduced container height
+            //             child: SingleChildScrollView(
+            //               child: SelectableText(
+            //                 publicKey,
+            //                 textAlign: TextAlign.center,
+            //                 style: TextStyle(
+            //                   fontSize: 12,
+            //                   color: Colors.black,
+            //                 ),
+            //               ),
+            //             ),
+            //           ),
+            //         )
+            //       : CircularProgressIndicator(),
+            // ),
             SizedBox(height: 10), // Reduced spacing
-            ElevatedButton(
-              onPressed: downloadQrCode,
-              child: Text(
-                'Download QR Code',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
+            // ElevatedButton(
+            //   onPressed: downloadQrCode,
+            //   child: Text(
+            //     'Download QR Code',
+            //     textAlign: TextAlign.center,
+            //     style: TextStyle(
+            //       color: Colors.white,
+            //       fontSize: 16,
+            //     ),
+            //   ),
+            //   style: ElevatedButton.styleFrom(
+            //     backgroundColor: Color(0xFF1A2247),
+            //     padding: EdgeInsets.symmetric(vertical: 12), // Reduced padding
+            //   ),
+            // ),
+            // SizedBox(height: 10),
+            // ElevatedButton(
+            //   onPressed: copyPublicKeyToClipboard,
+            //   child: Text(
+            //     'Copy Public Key',
+            //     textAlign: TextAlign.center,
+            //     style: TextStyle(
+            //       color: Colors.white,
+            //       fontSize: 16,
+            //     ),
+            //   ),
+            //   style: ElevatedButton.styleFrom(
+            //     backgroundColor: Color(0xFF1A2247),
+            //     padding: EdgeInsets.symmetric(vertical: 12), // Reduced padding
+            //   ),
+            // ),
+
+            ElevatedButton(onPressed: () {
+              final text = _controller.text;
+              Clipboard.setData(ClipboardData(text: text));
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Text copied to clipboard!'),
+
               ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF1A2247),
-                padding: EdgeInsets.symmetric(vertical: 12), // Reduced padding
-              ),
+              );
+            },
+                child: Text('Copy Text'),
             ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: copyPublicKeyToClipboard,
-              child: Text(
-                'Copy Public Key',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF1A2247),
-                padding: EdgeInsets.symmetric(vertical: 12), // Reduced padding
-              ),
+
+            SizedBox(height: 20),
+            ElevatedButton(onPressed: downloadQrCode,
+                child: Text('Download QR Code'),
             ),
+
             Spacer(),
             ElevatedButton(
               onPressed: () {

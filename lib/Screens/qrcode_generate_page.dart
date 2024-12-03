@@ -109,7 +109,7 @@ class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
                               version: QrVersions.auto,
                             )
                           : CircularProgressIndicator(),
-                      SizedBox(height: 30),
+                      SizedBox(height: 20),
                       Container(
                         height: 150,
                         child: TextField(
@@ -122,7 +122,7 @@ class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: () {
                           Clipboard.setData(ClipboardData(text: privateKey));
@@ -134,7 +134,7 @@ class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
                         },
                         child: Text('Copy Private Key'),
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: _downloadQRCode,
                         child: Text('Download QR Code'),
@@ -144,19 +144,24 @@ class _QRCodeGeneratePageState extends State<QRCodeGeneratePage> {
                 ),
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/username');
-                },
-                child: Text(
-                  'Continue',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+              
+              SizedBox(
+                height: 60,
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/username');
+                  },
+                  child: Text(
+                    'Continue',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF1A2247),
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                  ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF1A2247),
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                ),
-              ),
+              )
             ],
           ),
         ),
