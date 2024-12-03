@@ -25,12 +25,29 @@ class _MessagesListState extends State<MessagesList> {
   }
 
   Future<void> _loadConversations() async {
-    print('Current User: ${widget.currentUser}'); // Print the current user
+    print('Current User: ${widget.currentUser}');
     final conversations = await dbService.getConversations(widget.currentUser);
     setState(() {
-      _conversations = conversations;
-      print('Loaded conversations: $_conversations'); // Print the conversations array
+      _conversations = _filterUniqueConversations(conversations);
+      print('Loaded conversations: $_conversations');
     });
+  }
+
+  List<Map<String, String>> _filterUniqueConversations(List<Map<String, String>> conversations) {
+    final uniqueConversations = <String, Map<String, String>>{};
+    for (var conversation in conversations) {
+      final key = _generateConversationKey(conversation['username']!, widget.currentUser);
+      if (!uniqueConversations.containsKey(key)) {
+        uniqueConversations[key] = conversation;
+      }
+    }
+    return uniqueConversations.values.toList();
+  }
+
+
+  String _generateConversationKey(String user1, String user2) {
+    final sortedUsers = [user1, user2]..sort();
+    return sortedUsers.join('_');
   }
 
   @override
@@ -144,7 +161,6 @@ class _MessagesListState extends State<MessagesList> {
         backgroundImage: AssetImage('assets/default_avatar.png'), // Default avatar
       ),
       title: Text(username),
-      subtitle: Text(modelName),
       onTap: () {
         Navigator.push(
           context,
