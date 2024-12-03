@@ -25,9 +25,11 @@ class _MessagesListState extends State<MessagesList> {
   }
 
   Future<void> _loadConversations() async {
+    print('Current User: ${widget.currentUser}'); // Print the current user
     final conversations = await dbService.getConversations(widget.currentUser);
     setState(() {
       _conversations = conversations;
+      print('Loaded conversations: $_conversations'); // Print the conversations array
     });
   }
 
@@ -121,6 +123,7 @@ class _MessagesListState extends State<MessagesList> {
   }
 
   List<Widget> _buildChatItems(BuildContext context) {
+    print('Building chat items with conversations: $_conversations');
     return _conversations.map((conversation) {
       return Column(
         children: [

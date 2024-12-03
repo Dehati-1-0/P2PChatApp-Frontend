@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String loggedInUsername = "TestUser"; // Replace this with actual logic to fetch the current user's username.
+    String loggedInUsername = "Me"; // Replace this with actual logic to fetch the current user's username.
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
