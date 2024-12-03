@@ -16,9 +16,6 @@ import kotlinx.coroutines.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.PrintWriter
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
 import java.net.ServerSocket
 import java.security.KeyFactory
 import java.security.KeyPair
@@ -38,7 +35,7 @@ class MainActivity: FlutterActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startBroadcastService(12345) // Start the service with a default port
+        Broadcaster.startBroadcasting(12345, "DISCOVER:${getLocalIpAddress()}:${getDeviceModelName()}")
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -50,7 +47,9 @@ class MainActivity: FlutterActivity() {
                 override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
                     eventSink = events
                     val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-                    listenForBroadcasts(wifiManager)
+                    Broadcaster.listenForBroadcasts(wifiManager) { device ->
+                        eventSink?.success(mapOf("ip" to device.ip, "modelName" to device.modelName))
+                    }
                 }
 
                 override fun onCancel(arguments: Any?) {
@@ -86,7 +85,6 @@ class MainActivity: FlutterActivity() {
             }
         }
 
-        // Setup MethodChannel for receiving messages
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, RECEIVE_MESSAGE_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "startServer") {
                 val port = call.argument<Int>("port") ?: 8000
@@ -132,61 +130,6 @@ class MainActivity: FlutterActivity() {
             putExtra("port", port)
         }
         startService(intent)
-    }
-
-    private fun listenForBroadcasts(wifiManager: WifiManager) {
-        scope.launch {
-            try {
-                val socket = DatagramSocket(12345, InetAddress.getByName("0.0.0.0"))
-                socket.broadcast = true
-                val buffer = ByteArray(1024)
-                val localIpAddress = getLocalIpAddress() ?: return@launch
-                val multicastLock = wifiManager.createMulticastLock("p2pchatapp").apply {
-                    setReferenceCounted(true)
-                    acquire()
-                }
-
-                while (true) {
-                    val packet = DatagramPacket(buffer, buffer.size)
-                    socket.receive(packet)
-                    val message = String(packet.data, 0, packet.length)
-                    if (message.startsWith("DISCOVER:") && !message.contains(localIpAddress as CharSequence, ignoreCase = true)) {
-                        val parts = message.split(":")
-                        if (parts.size >= 3) {
-                            val ip = parts[1]
-                            val modelName = parts[2]
-                            val device = DiscoveredDevice(ip, modelName)
-                            withContext(Dispatchers.Main) {
-                                eventSink?.success(mapOf("ip" to device.ip, "modelName" to device.modelName))
-                            }
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("P2PChatApp", "Error listening for broadcasts: ${e.message}")
-            }
-        }
-    }
-
-    private fun broadcastIp(port: Int) {
-        scope.launch {
-            try {
-                val broadcastAddress = InetAddress.getByName("255.255.255.255")
-                val socket = DatagramSocket()
-                socket.broadcast = true
-                val localIpAddress = getLocalIpAddress() ?: return@launch
-                val message = "DISCOVER:$localIpAddress:${getDeviceModelName()}"
-                val packet = DatagramPacket(message.toByteArray(), message.length, broadcastAddress, port)
-                Log.d("P2PChatApp", "Broadcasting IP: $localIpAddress")
-                while (true) {
-                    socket.send(packet)
-                    delay(5000L)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Log.e("P2PChatApp", "Error broadcasting IP: ${e.message}")
-            }
-        }
     }
 
     private fun generateKeyPair(): KeyPair {
