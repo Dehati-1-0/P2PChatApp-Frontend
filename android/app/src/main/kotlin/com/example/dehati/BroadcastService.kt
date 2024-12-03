@@ -1,5 +1,5 @@
 package com.example.dehati
-
+import android.content.Context
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
@@ -15,11 +15,12 @@ class BroadcastService : Service() {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val port = intent?.getIntExtra("port", 12345) ?: 12345
-        username = intent?.getStringExtra("username") ?: "Unknown"
-        startBroadcasting(port)
-        return START_STICKY
-    }
+    val port = intent?.getIntExtra("port", 12345) ?: 12345
+    val sharedPreferences = getSharedPreferences("com.example.dehati", Context.MODE_PRIVATE)
+    username = sharedPreferences.getString("username", "Unknown") ?: "Unknown"
+    startBroadcasting(port)
+    return START_STICKY
+}
 
     override fun onBind(intent: Intent?): IBinder? {
         return null

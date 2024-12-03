@@ -66,19 +66,19 @@ class MainActivity: FlutterActivity() {
                     startBroadcastService(port)
                     result.success("Broadcast started on port $port")
                 }
-                "setUsername" -> { // Add this block
+                "setUsername" -> {
                     val username = call.argument<String>("username")
                     if (username != null) {
-                        val intent = Intent(this, BroadcastService::class.java).apply {
-                            putExtra("username", username)
+                        val sharedPreferences = getSharedPreferences("com.example.dehati", Context.MODE_PRIVATE)
+                        with(sharedPreferences.edit()) {
+                            putString("username", username)
+                            apply()
                         }
-                        startService(intent)
                         result.success("Username set to $username")
                     } else {
                         result.error("INVALID_ARGUMENTS", "Username is missing", null)
                     }
                 }
-                else -> result.notImplemented()
             }
         }
 
