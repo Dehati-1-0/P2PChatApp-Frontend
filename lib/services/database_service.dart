@@ -86,4 +86,35 @@ class DatabaseService {
       );
     }).toList();
   }
+
+  Future<List<Map<String, String>>> getConversations(String currentUser) async {
+    final db = await database;
+    final List<Map<String, dynamic>> result = await db.rawQuery('''
+        SELECT DISTINCT 
+        CASE 
+            WHEN senderUsername = ? THEN receiverUsername 
+            ELSE senderUsername 
+        END AS username,
+        CASE 
+            WHEN senderUsername = ? THEN receiverModelName 
+            ELSE senderModelName 
+        END AS modelName
+        FROM messages
+        WHERE senderUsername = ? OR receiverUsername = ?
+    ''', [currentUser, currentUser, currentUser, currentUser]);
+
+    // Map the result into a list of conversations
+    return result.map((row) {
+      return {
+        'username': row['username'] as String,
+        'modelName': row['modelName'] as String,
+      };
+    }).toList();
+  }
+
+  Future<void> loadConversations() async {
+    final dbService = DatabaseService(currentUser: currentUser);
+    List<Map<String, String>> conversations = await dbService.getConversations(currentUser);
+    // setState() can be used to update UI based on conversations here if needed.
+  }
 }
