@@ -3,11 +3,20 @@ import 'package:path/path.dart';
 import '../models/message.dart';
 
 class DatabaseService {
-  static final DatabaseService _instance = DatabaseService._internal();
-  DatabaseService._internal();
-  factory DatabaseService() => _instance;
-
+  final String currentUser;
+  static DatabaseService? _instance;
   Database? _database;
+
+  // Private constructor
+  DatabaseService._internal({required this.currentUser});
+
+  // Factory constructor to implement singleton pattern
+  factory DatabaseService({required String currentUser}) {
+    if (_instance == null || _instance!.currentUser != currentUser) {
+      _instance = DatabaseService._internal(currentUser: currentUser);
+    }
+    return _instance!;
+  }
 
   Future<Database> get database async {
     if (_database != null) return _database!;

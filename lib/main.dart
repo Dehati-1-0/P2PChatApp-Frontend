@@ -25,9 +25,19 @@ import 'Screens/empty_chats_page.dart';
 import 'Screens/qrcode_generate_page.dart';
 import 'Screens/scan_page.dart';
 import 'Screens/discover_page.dart';
+import 'package:provider/provider.dart'; 
+import 'services/database_service.dart';  
 
 void main() {
-  runApp(MyApp());
+  // runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        Provider(create: (_) => DatabaseService(currentUser: 'YourCurrentUser')),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -36,6 +46,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String loggedInUsername = "TestUser"; // Replace this with actual logic to fetch the current user's username.
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -66,9 +77,9 @@ class MyApp extends StatelessWidget {
           case '/regenerate':
             return SlideLeftRoute(page: GeneratePhrasePage());
           case '/newuser':
-            return SlideLeftRoute(page: WelcomePage());
+            return SlideLeftRoute(page: WelcomePage(loggedInUsername: loggedInUsername));
           case '/messages':
-            return SlideLeftRoute(page: MessagesList());
+            return SlideLeftRoute(page: MessagesList(currentUser: loggedInUsername));
           case '/contacts':
             return SlideLeftRoute(page: SavedContacts());
           case '/generatedphrase':

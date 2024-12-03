@@ -50,7 +50,8 @@ class _ChatPageState extends State<ChatPage> {
 
   // Load messages from the database
   Future<void> _loadMessages() async {
-    final savedMessages = await DatabaseService().getMessages(
+    final databaseService = DatabaseService(currentUser: 'Me');
+    final savedMessages = await databaseService.getMessages(
       'Me', // Current user as the senderUsername
       widget.userName, // Receiver's username
     );
@@ -81,7 +82,7 @@ class _ChatPageState extends State<ChatPage> {
           });
 
           // Save the sent message to the database
-          await DatabaseService().saveMessage(newMessage);
+          await DatabaseService(currentUser: 'Me').saveMessage(newMessage);
 
           print("Message sent to ${result['serverIp']}:${result['serverPort']}");
         } else {
@@ -122,7 +123,7 @@ class _ChatPageState extends State<ChatPage> {
         });
 
         // Save the received message to the database
-        await DatabaseService().saveMessage(newMessage);
+        await DatabaseService(currentUser: 'Me').saveMessage(newMessage);
       }
     });
   }

@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'messages_list.dart'; // Replace with the actual page you want to navigate to
 
 class WelcomePage extends StatefulWidget {
+  final String loggedInUsername;
+
+  WelcomePage({required this.loggedInUsername});
+  
   @override
   _WelcomePageState createState() => _WelcomePageState();
 }
@@ -16,7 +20,7 @@ class _WelcomePageState extends State<WelcomePage> {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                MessagesList()), // Replace with the actual page
+                MessagesList(currentUser: widget.loggedInUsername)), // Replace with the actual page
       );
     });
   }
