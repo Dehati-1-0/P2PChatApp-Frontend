@@ -11,13 +11,12 @@ import java.net.InetAddress
 
 class BroadcastService : Service() {
 
-    private var username
+    private var username = "Unknown"
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val port = intent?.getIntExtra("port", 12345) ?: 12345
-//        username = intent?.getStringExtra("username") ?: "Unknown"
-        username = intent?.getStringExtra("username")?.takeIf { it.isNotEmpty() } ?: "Unknown"
+        username = intent?.getStringExtra("username") ?: "Unknown"
         startBroadcasting(port)
         return START_STICKY
     }
