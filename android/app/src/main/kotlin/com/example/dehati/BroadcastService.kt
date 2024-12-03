@@ -11,10 +11,13 @@ import java.net.InetAddress
 
 class BroadcastService : Service() {
 
+    private var username
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val port = intent?.getIntExtra("port", 12345) ?: 12345
+//        username = intent?.getStringExtra("username") ?: "Unknown"
+        username = intent?.getStringExtra("username")?.takeIf { it.isNotEmpty() } ?: "Unknown"
         startBroadcasting(port)
         return START_STICKY
     }
@@ -30,16 +33,16 @@ class BroadcastService : Service() {
                 val socket = DatagramSocket()
                 socket.broadcast = true
                 val localIpAddress = getLocalIpAddress() ?: return@launch
-                val message = "DISCOVER:$localIpAddress:${getDeviceModelName()}"
+                val message = "DISCOVER:$localIpAddress:$username:${getDeviceModelName()}"
                 val packet = DatagramPacket(message.toByteArray(), message.length, broadcastAddress, port)
-                Log.d("BroadcastService", "Broadcasting IP: $localIpAddress")
+                Log.d("BroadcastService", "Broadcasting: $message")
                 while (true) {
                     socket.send(packet)
                     delay(5000L)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Log.e("BroadcastService", "Error broadcasting IP: ${e.message}")
+                Log.e("BroadcastService", "Error broadcasting: ${e.message}")
             }
         }
     }

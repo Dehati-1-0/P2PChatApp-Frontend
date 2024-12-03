@@ -1,13 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/custom_app_bar.dart';
+import 'dart:math';
 
 class UserName extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
 
   Future<void> _saveUsername(String username) async {
+    // Generate a unique alphanumeric suffix
+    String uniqueSuffix = _generateRandomString(5);
+    String uniqueUsername = '${username}_$uniqueSuffix';
+
+    // Save to SharedPreferences
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('username', username);
+    await prefs.setString('username', uniqueUsername);
+    await sendUsernameToBackend(uniqueUsername);
+    print('Saved Unique Username: $uniqueUsername');
+  }
+
+  Future<void> sendUsernameToBackend(String username) async {
+    const platform = MethodChannel('com.example.dehati/broadcast');
+    try {
+      await platform.invokeMethod('setUsername', {'username': username});
+      print('Username sent to backend: $username');
+    } catch (e) {
+      print('Failed to send username: $e');
+    }
+  }
+
+  String _generateRandomString(int length) {
+    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final random = Random();
+    return String.fromCharCodes(
+      Iterable.generate(length, (_) => characters.codeUnitAt(random.nextInt(characters.length))),
+    );
   }
 
   @override

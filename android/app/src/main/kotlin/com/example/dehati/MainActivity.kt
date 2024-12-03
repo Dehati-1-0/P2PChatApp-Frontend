@@ -60,14 +60,28 @@ class MainActivity: FlutterActivity() {
         )
 
         MethodChannel(binaryMessenger, BROADCAST_CHANNEL).setMethodCallHandler { call, result ->
-            if (call.method == "startBroadcast") {
-                val port = call.argument<Int>("port") ?: 8000
-                startBroadcastService(port)
-                result.success("Broadcast started on port $port")
-            } else {
-                result.notImplemented()
+            when (call.method) {
+                "startBroadcast" -> {
+                    val port = call.argument<Int>("port") ?: 8000
+                    startBroadcastService(port)
+                    result.success("Broadcast started on port $port")
+                }
+                "setUsername" -> { // Add this block
+                    val username = call.argument<String>("username")
+                    if (username != null) {
+                        val intent = Intent(this, BroadcastService::class.java).apply {
+                            putExtra("username", username)
+                        }
+                        startService(intent)
+                        result.success("Username set to $username")
+                    } else {
+                        result.error("INVALID_ARGUMENTS", "Username is missing", null)
+                    }
+                }
+                else -> result.notImplemented()
             }
         }
+
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SEND_MESSAGE_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "sendMessage") {
@@ -168,26 +182,26 @@ class MainActivity: FlutterActivity() {
         }
     }
 
-    private fun broadcastIp(port: Int) {
-        scope.launch {
-            try {
-                val broadcastAddress = InetAddress.getByName("255.255.255.255")
-                val socket = DatagramSocket()
-                socket.broadcast = true
-                val localIpAddress = getLocalIpAddress() ?: return@launch
-                val message = "DISCOVER:$localIpAddress:${getDeviceModelName()}"
-                val packet = DatagramPacket(message.toByteArray(), message.length, broadcastAddress, port)
-                Log.d("P2PChatApp", "Broadcasting IP: $localIpAddress")
-                while (true) {
-                    socket.send(packet)
-                    delay(5000L)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Log.e("P2PChatApp", "Error broadcasting IP: ${e.message}")
-            }
-        }
-    }
+//    private fun broadcastIp(port: Int) {
+//        scope.launch {
+//            try {
+//                val broadcastAddress = InetAddress.getByName("255.255.255.255")
+//                val socket = DatagramSocket()
+//                socket.broadcast = true
+//                val localIpAddress = getLocalIpAddress() ?: return@launch
+//                val message = "DISCOVER:$localIpAddress:${getDeviceModelName()}"
+//                val packet = DatagramPacket(message.toByteArray(), message.length, broadcastAddress, port)
+//                Log.d("P2PChatApp", "Broadcasting IP: $localIpAddress")
+//                while (true) {
+//                    socket.send(packet)
+//                    delay(5000L)
+//                }
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//                Log.e("P2PChatApp", "Error broadcasting IP: ${e.message}")
+//            }
+//        }
+//    }
 
     private fun generateKeyPair(): KeyPair {
         val keyGen = KeyPairGenerator.getInstance("RSA")
