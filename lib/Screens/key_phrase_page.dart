@@ -33,14 +33,14 @@ class KeyPhrasePage extends StatelessWidget {
                       children: [
                         TextSpan(
                           text:
-                              "Before using Dehati App, we ask for your unique ID, key phrase, and username to ensure a secure and personalized experience:\n\n",
+                              "Before using the Dehati App, we ask for your username and provide you with a private key to ensure a secure and personalized experience:\n\n",
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.black,
                           ),
                         ),
                         TextSpan(
-                          text: "Unique ID:\n",
+                          text: "UserName:\n",
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.black,
@@ -49,7 +49,7 @@ class KeyPhrasePage extends StatelessWidget {
                         ),
                         TextSpan(
                           text:
-                              "This is your personal digital identity on the Dehati App.This ID is unique to you and ensures that you are easily recognizable by others while maintaining your anonymity and privacy.\n\n",
+                              "The Dehati App creates a unique username just for you, uniquely identifying you within the network while ensuring seamless connectivity.\n\n",
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.black,

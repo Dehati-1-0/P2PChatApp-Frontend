@@ -118,17 +118,17 @@ class _SettingsPageState extends State<SettingsPage> {
                             style: TextStyle(fontSize: 14),
                           ),
                           SizedBox(width: 80),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, '/username');
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.edit, size: 20),
-                                SizedBox(width: 5),
-                              ],
-                            ),
-                          ),
+                          // GestureDetector(
+                          //   onTap: () {
+                          //     Navigator.pushNamed(context, '/username');
+                          //   },
+                          //   child: Row(
+                          //     children: [
+                          //       Icon(Icons.edit, size: 20),
+                          //       SizedBox(width: 5),
+                          //     ],
+                          //   ),
+                          // ),
                         ],
                       ),
                       SizedBox(height: 20),

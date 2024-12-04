@@ -17,6 +17,8 @@ class _MessagesListState extends State<MessagesList> {
   List<Map<String, String>> _conversations = [];
 
   _MessagesListState() : dbService = DatabaseService(currentUser: 'YourCurrentUser');  // Correct initialization
+  bool _isChatsSelected = true;
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -48,6 +50,12 @@ class _MessagesListState extends State<MessagesList> {
   String _generateConversationKey(String user1, String user2) {
     final sortedUsers = [user1, user2]..sort();
     return sortedUsers.join('_');
+  }
+  void _onBottomNavItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      _isChatsSelected = index == 0;
+    });
   }
 
   @override
@@ -120,18 +128,18 @@ class _MessagesListState extends State<MessagesList> {
               ),
               IconButton(
                 icon: Icon(Icons.chat_bubble_outline),
-                color: Colors.white,
+                color: _selectedIndex == 0 ? Colors.black : Colors.white,
                 onPressed: () {
                   Navigator.pushNamed(context, '/messages');
                 },
               ),
-              IconButton(
-                icon: Icon(Icons.people_outline),
-                color: Colors.white,
-                onPressed: () {
-                  Navigator.pushNamed(context, '/contacts');
-                },
-              ),
+              // IconButton(
+              //   icon: Icon(Icons.people_outline),
+              //   color: Colors.white,
+              //   onPressed: () {
+              //     Navigator.pushNamed(context, '/contacts');
+              //   },
+              // ),
             ],
           ),
         ),
