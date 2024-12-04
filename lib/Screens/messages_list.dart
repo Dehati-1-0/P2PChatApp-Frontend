@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';  // Add this for Provider usage
-import 'chat_page.dart';
+import 'chat_page1.dart';
 import '../services/database_service.dart';
 
 class MessagesList extends StatefulWidget {
@@ -165,8 +165,9 @@ class _MessagesListState extends State<MessagesList> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ChatPage(
-              userName: username,
+            builder: (context) => ChatPage1(
+              currentUser: widget.currentUser,  // Your current logged-in user
+              recipientUser: username,
               userAvatar: 'assets/default_avatar.png',
               isOnline: true, // Placeholder
               deviceIp: '', // Add logic if needed

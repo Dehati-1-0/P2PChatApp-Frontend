@@ -47,8 +47,26 @@ class DatabaseService {
     );
   }
 
+  Future<void> dropTable(Database db) async {
+    await db.execute('DROP TABLE IF EXISTS messages');
+  }
+
   Future<void> saveMessage(Message message) async {
     final db = await database;
+    // dropTable(db);
+    // await db.execute('''
+    //       CREATE TABLE messages IF NOT EXISTS(
+    //         id INTEGER PRIMARY KEY AUTOINCREMENT,
+    //         senderUsername TEXT,
+    //         senderIp TEXT,
+    //         senderModelName TEXT,
+    //         receiverUsername TEXT,
+    //         receiverIp TEXT,
+    //         receiverModelName TEXT,
+    //         content TEXT,
+    //         timestamp TEXT
+    //       )
+    //     ''');
     await db.insert(
       'messages',
       {
